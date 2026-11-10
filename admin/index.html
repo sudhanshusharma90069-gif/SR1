@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <title>SR1 Admin Console</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script>tailwind.config = { darkMode: "class", theme: { extend: { fontFamily: { sans: ["Inter", "system-ui", "sans-serif"], display: ['"Plus Jakarta Sans"', "Inter", "sans-serif"] } } } };</script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+    .display { font-family: 'Plus Jakarta Sans', 'Inter', sans-serif; letter-spacing: -0.02em; }
+    .scroll-thin::-webkit-scrollbar { width: 6px; height: 6px; }
+    .scroll-thin::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+    .nav-item.active { background: rgba(99, 102, 241, .14); color: #fff; }
+    .nav-item.active svg { color: #a5b4fc; }
+    .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 16px; box-shadow: 0 1px 2px rgba(16,24,40,.04); }
+    .dark .card { background: #0f172a; border-color: #1e293b; }
+    .toggle { width: 36px; height: 20px; border-radius: 9999px; background: #cbd5e1; position: relative; transition: .2s; }
+    .toggle::after { content: ""; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 9999px; background: #fff; transition: .2s; box-shadow: 0 1px 2px rgba(0,0,0,.2); }
+    .toggle.on { background: #4f46e5; }
+    .toggle.on::after { left: 18px; }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 dark:bg-slate-950 dark:text-slate-200">
+  <div class="min-h-screen flex">
+
+    <!-- SIDEBAR -->
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-64 bg-slate-950 text-slate-400 flex flex-col -translate-x-full lg:translate-x-0 transition-transform border-r border-white/5">
+      <a href="/" class="flex items-center gap-3 px-5 h-16 border-b border-white/5">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-800 ring-1 ring-white/10 flex items-center justify-center display font-extrabold text-white text-sm">SR1</div>
+        <div>
+          <div class="display font-bold text-white text-sm leading-tight">SR1 Admin</div>
+          <div class="text-[11px] text-slate-500">Commerce Control Center</div>
+        </div>
+      </a>
+      <nav class="flex-1 overflow-y-auto scroll-thin px-3 py-4 space-y-6 text-sm">
+        <div>
+          <div class="px-3 mb-2 text-[10px] font-semibold uppercase tracking-widest text-slate-600">Main</div>
+          <button data-view="overview" class="nav-item active w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/5 hover:text-white font-medium">
+            <svg class="w-4.5 h-4.5 w-[18px] h-[18px]" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 5a1 1 0 011-1h4a1 1 0 011 1v5a1 1 0 01-1 1H5a1 1 0 01-1-1V5zm10 0a1 1 0 011-1h4a1 1 0 011 1v2a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zm10-3a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1h-4a1 1 0 01-1-1v-7z"/></svg>
+            Overview
+          </button>
+          <button data-view="orders" class="nav-item w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/5 hover:text-white font-medium">
+            <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+            Orders <span id="nav-orders-count" class="ml-auto text-[10px] font-bold bg-indigo-500/20 text-indigo-200 px-1.5 py-0.5 rounded">0</span>
+          </button>
+          <button data-view="platforms" class="nav-item w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/5 hover:text-white font-medium">
+            <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+            Platforms <span class="ml-auto text-[10px] font-bold bg-white/5 text-slate-400 px-1.5 py-0.5 rounded">86+</span>
+          </button>
+          <button data-view="customers" class="nav-item w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/5 hover:text-white font-medium">
+            <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            Customers
+          </button>
+          <button data-view="alerts" class="nav-item w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/5 hover:text-white font-medium">
+            <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+            Price Alerts
+          </button>
+        </div>
+        <div>
+          <div class="px-3 mb-2 text-[10px] font-semibold uppercase tracking-widest text-slate-600">System</div>
+          <button data-view="settings" class="nav-item w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/5 hover:text-white font-medium">
+            <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            Settings
+          </button>
+          <a href="/" target="_blank" rel="noopener" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/5 hover:text-white font-medium">
+            <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+            View live site
+          </a>
+        </div>
+      </nav>
+      <div class="p-4 border-t border-white/5">
+        <div class="rounded-xl bg-gradient-to-br from-indigo-600/30 to-indigo-900/30 ring-1 ring-indigo-400/20 p-3.5">
+          <div class="text-xs font-semibold text-white">System health</div>
+          <div class="mt-2 h-1.5 rounded-full bg-white/10 overflow-hidden"><div class="h-full w-[98%] bg-emerald-400 rounded-full"></div></div>
+          <div class="mt-1.5 text-[11px] text-slate-400">99.98% uptime · 86 integrations</div>
+        </div>
+      </div>
+    </aside>
+    <div id="sidebar-backdrop" class="fixed inset-0 z-30 bg-slate-950/50 hidden lg:hidden"></div>
+
+    <!-- MAIN -->
+    <div class="flex-1 lg:pl-64 min-w-0">
+      <header class="sticky top-0 z-20 h-16 bg-white/85 dark:bg-slate-950/85 backdrop-blur border-b border-slate-200 dark:border-slate-800 flex items-center gap-3 px-4 md:px-8">
+        <button id="menu-btn" class="lg:hidden p-2 -ml-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" aria-label="Open menu">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+        <div class="min-w-0">
+          <h1 id="view-title" class="display text-lg font-bold text-slate-900 dark:text-white truncate">Overview</h1>
+          <p id="view-sub" class="hidden sm:block text-[11px] text-slate-500 -mt-0.5 truncate">Real-time performance across all SR1 platforms</p>
+        </div>
+        <div class="ml-auto flex items-center gap-2">
+          <div class="hidden md:flex items-center relative">
+            <svg class="w-4 h-4 absolute left-3 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            <input id="global-search" type="search" placeholder="Search orders, customers…" class="w-64 pl-9 pr-3 py-2 text-sm rounded-lg bg-slate-100 dark:bg-slate-900 border border-transparent focus:border-indigo-400 focus:bg-white dark:focus:bg-slate-900 focus:outline-none">
+          </div>
+          <span class="hidden sm:inline-flex items-center gap-1.5 text-[11px] font-semibold px-2 py-1 rounded-md bg-amber-50 text-amber-700 ring-1 ring-amber-200 dark:bg-amber-500/10 dark:text-amber-300 dark:ring-amber-500/20" title="Charts and tables use sample data until a database is connected">Demo data</span>
+          <button id="theme-btn" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" aria-label="Toggle dark mode">
+            <svg class="w-5 h-5 dark:hidden" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+            <svg class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+          </button>
+          <button id="notif-btn" class="relative p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" aria-label="Notifications">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+            <span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-rose-500 ring-2 ring-white dark:ring-slate-950"></span>
+          </button>
+          <div class="relative">
+            <button id="profile-btn" class="flex items-center gap-2 pl-1 pr-2 py-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">
+              <span class="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-indigo-700 text-white text-xs font-bold flex items-center justify-center">SR</span>
+              <span class="hidden md:block text-left">
+                <span class="block text-xs font-semibold text-slate-900 dark:text-white">Admin</span>
+                <span class="block text-[10px] text-slate-500">Super Administrator</span>
+              </span>
+            </button>
+            <div id="profile-menu" class="hidden absolute right-0 mt-2 w-48 card p-1.5 text-sm shadow-lg">
+              <button data-view="settings" class="nav-shortcut w-full text-left px-3 py-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800">Settings</button>
+              <a href="/" class="block px-3 py-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800">View site</a>
+              <a href="/api/logout" class="block px-3 py-2 rounded-md text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-500/10">Sign out</a>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main class="p-4 md:p-8 space-y-6">
+
+        <!-- OVERVIEW -->
+        <section data-panel="overview" class="space-y-6">
+          <div class="flex flex-col md:flex-row md:items-end justify-between gap-3">
+            <div>
+              <p class="text-sm text-slate-500">Good to see you,</p>
+              <h2 class="display text-2xl font-extrabold text-slate-900 dark:text-white">Welcome back, Admin</h2>
+            </div>
+            <div class="flex items-center gap-2">
+              <div class="inline-flex rounded-lg bg-white dark:bg-slate-900 ring-1 ring-slate-200 dark:ring-slate-800 p-0.5 text-xs font-semibold" id="range-group">
+                <button data-range="7" class="range-btn px-3 py-1.5 rounded-md">7D</button>
+                <button data-range="30" class="range-btn px-3 py-1.5 rounded-md">30D</button>
+                <button data-range="90" class="range-btn px-3 py-1.5 rounded-md">90D</button>
+              </div>
+              <button id="export-btn" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold shadow-sm">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5m0 0l5-5m-5 5V4"/></svg>
+                Export CSV
+              </button>
+            </div>
+          </div>
+
+          <div id="kpi-grid" class="grid grid-cols-2 xl:grid-cols-4 gap-4"></div>
+
+          <div class="grid xl:grid-cols-3 gap-4">
+            <div class="card p-5 xl:col-span-2">
+              <div class="flex items-center justify-between">
+                <div>
+                  <h3 class="font-semibold text-slate-900 dark:text-white">Revenue & orders</h3>
+                  <p class="text-xs text-slate-500">Gross merchandise value routed through SR1</p>
+                </div>
+                <div class="flex items-center gap-4 text-[11px] text-slate-500">
+                  <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-sm bg-indigo-500"></span>Revenue</span>
+                  <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-sm bg-emerald-400"></span>Orders</span>
+                </div>
+              </div>
+              <div class="h-72 mt-4"><canvas id="revenue-chart"></canvas></div>
+            </div>
+            <div class="card p-5">
+              <h3 class="font-semibold text-slate-900 dark:text-white">Orders by store</h3>
+              <p class="text-xs text-slate-500">Share of orders this period</p>
+              <div class="h-52 mt-4 relative"><canvas id="store-chart"></canvas></div>
+              <div id="store-legend" class="mt-4 space-y-2 text-sm"></div>
+            </div>
+          </div>
+
+          <div class="grid xl:grid-cols-3 gap-4">
+            <div class="card p-5 xl:col-span-2">
+              <div class="flex items-center justify-between mb-4">
+                <div>
+                  <h3 class="font-semibold text-slate-900 dark:text-white">Recent orders</h3>
+                  <p class="text-xs text-slate-500">Latest transactions across all platforms</p>
+                </div>
+                <button data-view="orders" class="nav-shortcut text-xs font-semibold text-indigo-600 hover:text-indigo-700">View all →</button>
+              </div>
+              <div class="overflow-x-auto scroll-thin -mx-5">
+                <table class="w-full text-sm">
+                  <thead class="text-[11px] uppercase tracking-wider text-slate-500 bg-slate-50 dark:bg-slate-900/60">
+                    <tr><th class="text-left font-semibold px-5 py-2.5">Order</th><th class="text-left font-semibold px-3 py-2.5">Customer</th><th class="text-left font-semibold px-3 py-2.5">Store</th><th class="text-right font-semibold px-3 py-2.5">Amount</th><th class="text-left font-semibold px-5 py-2.5">Status</th></tr>
+                  </thead>
+                  <tbody id="recent-orders" class="divide-y divide-slate-100 dark:divide-slate-800"></tbody>
+                </table>
+              </div>
+            </div>
+            <div class="space-y-4">
+              <div class="card p-5">
+                <h3 class="font-semibold text-slate-900 dark:text-white">Top categories</h3>
+                <p class="text-xs text-slate-500 mb-4">Revenue share by category</p>
+                <div id="top-categories" class="space-y-3"></div>
+              </div>
+              <div class="card p-5">
+                <div class="flex items-center justify-between">
+                  <h3 class="font-semibold text-slate-900 dark:text-white">Live activity</h3>
+                  <span class="flex items-center gap-1.5 text-[11px] text-emerald-600 font-semibold"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>Live</span>
+                </div>
+                <ul id="activity-feed" class="mt-4 space-y-3 text-sm"></ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ORDERS -->
+        <section data-panel="orders" class="hidden space-y-4">
+          <div class="card p-4 flex flex-col md:flex-row gap-3 md:items-center">
+            <input id="orders-search" type="search" placeholder="Search by order ID or customer…" class="flex-1 px-3.5 py-2 text-sm rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <select id="orders-store" class="px-3 py-2 text-sm rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900">
+              <option value="all">All stores</option><option value="amazon">Amazon</option><option value="flipkart">Flipkart</option><option value="blinkit">Blinkit</option><option value="other">Other apps</option>
+            </select>
+            <div id="status-filter" class="inline-flex rounded-lg bg-slate-100 dark:bg-slate-800 p-0.5 text-xs font-semibold"></div>
+          </div>
+          <div class="card overflow-hidden">
+            <div class="overflow-x-auto scroll-thin">
+              <table class="w-full text-sm">
+                <thead class="text-[11px] uppercase tracking-wider text-slate-500 bg-slate-50 dark:bg-slate-900/60">
+                  <tr><th class="text-left font-semibold px-5 py-3">Order</th><th class="text-left font-semibold px-3 py-3">Date</th><th class="text-left font-semibold px-3 py-3">Customer</th><th class="text-left font-semibold px-3 py-3">City</th><th class="text-left font-semibold px-3 py-3">Store</th><th class="text-right font-semibold px-3 py-3">Items</th><th class="text-right font-semibold px-3 py-3">Amount</th><th class="text-left font-semibold px-3 py-3">Status</th><th class="px-5 py-3"></th></tr>
+                </thead>
+                <tbody id="orders-table" class="divide-y divide-slate-100 dark:divide-slate-800"></tbody>
+              </table>
+            </div>
+            <div class="flex items-center justify-between px-5 py-3 border-t border-slate-100 dark:border-slate-800 text-xs text-slate-500">
+              <span id="orders-summary"></span>
+              <div class="flex gap-1"><button id="orders-prev" class="px-3 py-1.5 rounded-md ring-1 ring-slate-200 dark:ring-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800">Previous</button><button id="orders-next" class="px-3 py-1.5 rounded-md ring-1 ring-slate-200 dark:ring-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800">Next</button></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- PLATFORMS -->
+        <section data-panel="platforms" class="hidden space-y-4">
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="platform-kpis"></div>
+          <div class="card p-4 flex flex-col md:flex-row gap-3 md:items-center">
+            <input id="platform-search" type="search" placeholder="Search 86+ platforms…" class="flex-1 px-3.5 py-2 text-sm rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <select id="platform-category" class="px-3 py-2 text-sm rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900"></select>
+          </div>
+          <div id="platform-grid" class="grid sm:grid-cols-2 xl:grid-cols-3 gap-4"></div>
+        </section>
+
+        <!-- CUSTOMERS -->
+        <section data-panel="customers" class="hidden space-y-4">
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="customer-kpis"></div>
+          <div class="card overflow-hidden">
+            <div class="overflow-x-auto scroll-thin">
+              <table class="w-full text-sm">
+                <thead class="text-[11px] uppercase tracking-wider text-slate-500 bg-slate-50 dark:bg-slate-900/60">
+                  <tr><th class="text-left font-semibold px-5 py-3">Customer</th><th class="text-left font-semibold px-3 py-3">City</th><th class="text-left font-semibold px-3 py-3">Plan</th><th class="text-right font-semibold px-3 py-3">Orders</th><th class="text-right font-semibold px-3 py-3">Lifetime value</th><th class="text-right font-semibold px-3 py-3">Loyalty pts</th><th class="text-left font-semibold px-5 py-3">Last active</th></tr>
+                </thead>
+                <tbody id="customers-table" class="divide-y divide-slate-100 dark:divide-slate-800"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ALERTS -->
+        <section data-panel="alerts" class="hidden space-y-4">
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="alert-kpis"></div>
+          <div class="card overflow-hidden">
+            <div class="overflow-x-auto scroll-thin">
+              <table class="w-full text-sm">
+                <thead class="text-[11px] uppercase tracking-wider text-slate-500 bg-slate-50 dark:bg-slate-900/60">
+                  <tr><th class="text-left font-semibold px-5 py-3">Product</th><th class="text-left font-semibold px-3 py-3">Customer</th><th class="text-left font-semibold px-3 py-3">Store</th><th class="text-right font-semibold px-3 py-3">Current</th><th class="text-right font-semibold px-3 py-3">Target</th><th class="text-left font-semibold px-3 py-3">Progress</th><th class="text-left font-semibold px-5 py-3">Status</th></tr>
+                </thead>
+                <tbody id="alerts-table" class="divide-y divide-slate-100 dark:divide-slate-800"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- SETTINGS -->
+        <section data-panel="settings" class="hidden grid xl:grid-cols-3 gap-4">
+          <form id="settings-form" class="card p-6 xl:col-span-2 space-y-5">
+            <div>
+              <h3 class="font-semibold text-slate-900 dark:text-white">Store settings</h3>
+              <p class="text-xs text-slate-500">Saved in this browser until a backend is connected.</p>
+            </div>
+            <div class="grid md:grid-cols-2 gap-4">
+              <label class="block text-sm"><span class="font-medium text-slate-700 dark:text-slate-300">Brand name</span><input name="brand" class="mt-1.5 w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm" value="SR1 Super App"></label>
+              <label class="block text-sm"><span class="font-medium text-slate-700 dark:text-slate-300">Support email</span><input name="email" type="email" class="mt-1.5 w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm" value="support@sr1.in"></label>
+              <label class="block text-sm"><span class="font-medium text-slate-700 dark:text-slate-300">Active coupon code</span><input name="coupon" class="mt-1.5 w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm uppercase" value="SR1FIRST"></label>
+              <label class="block text-sm"><span class="font-medium text-slate-700 dark:text-slate-300">Coupon discount (%)</span><input name="discount" type="number" min="0" max="90" class="mt-1.5 w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm" value="10"></label>
+              <label class="block text-sm md:col-span-2"><span class="font-medium text-slate-700 dark:text-slate-300">Announcement bar</span><input name="announcement" class="mt-1.5 w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm" value="86+ Apps in One Place! Use Coupon SR1FIRST (10% OFF)"></label>
+            </div>
+            <div class="divide-y divide-slate-100 dark:divide-slate-800 rounded-xl ring-1 ring-slate-200 dark:ring-slate-800">
+              <div class="flex items-center justify-between p-4"><div><div class="text-sm font-medium">Maintenance mode</div><div class="text-xs text-slate-500">Show a maintenance banner to visitors</div></div><button type="button" data-toggle="maintenance" class="toggle"></button></div>
+              <div class="flex items-center justify-between p-4"><div><div class="text-sm font-medium">Order email notifications</div><div class="text-xs text-slate-500">Email the admin for every new order</div></div><button type="button" data-toggle="emailNotif" class="toggle on"></button></div>
+              <div class="flex items-center justify-between p-4"><div><div class="text-sm font-medium">AI price auto-sync</div><div class="text-xs text-slate-500">Refresh partner prices every 30 minutes</div></div><button type="button" data-toggle="autoSync" class="toggle on"></button></div>
+            </div>
+            <div class="flex justify-end gap-2">
+              <button type="reset" class="px-4 py-2 rounded-lg text-sm font-semibold ring-1 ring-slate-200 dark:ring-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800">Reset</button>
+              <button type="submit" class="px-4 py-2 rounded-lg text-sm font-semibold bg-indigo-600 hover:bg-indigo-700 text-white">Save changes</button>
+            </div>
+          </form>
+          <div class="space-y-4">
+            <div class="card p-6">
+              <h3 class="font-semibold text-slate-900 dark:text-white">Security</h3>
+              <ul class="mt-3 space-y-2.5 text-sm text-slate-600 dark:text-slate-400">
+                <li class="flex gap-2"><span class="text-emerald-500">✓</span>Server-verified admin login</li>
+                <li class="flex gap-2"><span class="text-emerald-500">✓</span>HttpOnly, signed 12-hour session</li>
+                <li class="flex gap-2"><span class="text-emerald-500">✓</span>Admin pages hidden from search engines</li>
+              </ul>
+              <p class="mt-4 text-xs text-slate-500">Change the admin password from Vercel → Project → Settings → Environment Variables (<code class="font-mono">ADMIN_PASSWORD</code>).</p>
+            </div>
+            <div class="card p-6">
+              <h3 class="font-semibold text-slate-900 dark:text-white">Session</h3>
+              <p class="mt-1 text-sm text-slate-500">Signed in as <strong class="text-slate-800 dark:text-slate-200">admin</strong></p>
+              <a href="/api/logout" class="mt-4 inline-flex px-4 py-2 rounded-lg text-sm font-semibold text-rose-600 ring-1 ring-rose-200 hover:bg-rose-50 dark:ring-rose-500/30 dark:hover:bg-rose-500/10">Sign out</a>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <div id="toast" class="fixed bottom-5 right-5 z-50 hidden px-4 py-2.5 rounded-lg bg-slate-900 text-white text-sm shadow-xl"></div>
+
+  <!-- ORDER DRAWER -->
+  <div id="order-drawer" class="fixed inset-0 z-50 hidden">
+    <div data-close class="absolute inset-0 bg-slate-950/50"></div>
+    <div class="absolute right-0 inset-y-0 w-full max-w-md bg-white dark:bg-slate-900 shadow-2xl flex flex-col">
+      <div class="flex items-center justify-between px-6 h-16 border-b border-slate-200 dark:border-slate-800">
+        <h3 id="drawer-title" class="display font-bold text-slate-900 dark:text-white">Order</h3>
+        <button data-close class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" aria-label="Close">✕</button>
+      </div>
+      <div id="drawer-body" class="flex-1 overflow-y-auto p-6 space-y-5 text-sm"></div>
+    </div>
+  </div>
+
+  <script>
+    const $ = (s, r = document) => r.querySelector(s);
+    const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+    const inr = (n) => "₹" + Math.round(n).toLocaleString("en-IN");
+    const compact = (n) => n >= 1e7 ? "₹" + (n / 1e7).toFixed(2) + " Cr" : n >= 1e5 ? "₹" + (n / 1e5).toFixed(2) + " L" : inr(n);
+
+    let seed = 20261111;
+    const rand = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+    const pick = (arr) => arr[Math.floor(rand() * arr.length)];
+    const between = (a, b) => Math.floor(a + rand() * (b - a + 1));
+
+    const CATEGORIES = {
+      "Online Marketplace": ["Amazon", "Flipkart", "Meesho", "Snapdeal", "ShopClues", "IndiaMART"],
+      "Fashion & Lifestyle": ["Myntra", "Ajio", "Tata CLiQ", "LimeRoad"],
+      "Beauty & Personal Care": ["Nykaa", "Purplle"],
+      "Grocery & Quick Commerce": ["Blinkit", "Zepto", "Bigbasket", "JioMart", "Instamart", "Smart Bazaar", "StarQuik", "Nature's Basket", "Spencers"],
+      "Food Delivery": ["Swiggy", "Zomato", "Domino's", "Faasos", "Licious", "TenderCuts", "FreshToHome", "Eat.Club", "Swiggy One", "Zomato Gold"],
+      "Hotel Booking": ["OYO Rooms", "Booking.com", "Airbnb", "MakeMyTrip Hotels"],
+      "Travel Booking": ["MakeMyTrip", "Goibibo", "Yatra", "Cleartrip", "EaseMyTrip", "IRCTC", "RedBus", "Air India", "IndiGo", "AirAsia"],
+      "Travel & Mobility": ["Uber", "Rapido", "Ola", "IRCTC eCatering", "Zoop", "RailRestro", "TravelKhana", "RailYatri"],
+      "Electronics & Specialty": ["Reliance Digital", "Lenskart", "FirstCry", "Pepperfry"],
+      "Movies & Entertainment": ["BookMyShow", "PVR Cinemas", "INOX", "Paytm Insider", "TicketNew"],
+      "Recharge & Payments": ["Paytm", "PhonePe", "Google Pay", "Amazon Pay", "Freecharge", "MobiKwik", "Cred", "Bajaj Finserv", "Airtel Thanks", "MyJio", "VI", "BSNL"],
+      "Daily Use & Stream": ["YouTube", "Instagram", "Facebook", "X (Twitter)", "WhatsApp", "Telegram", "LinkedIn", "Snapchat", "Pinterest", "Reddit", "Quora", "Discord"],
+    };
+    const STORE_META = {
+      amazon: { label: "Amazon", cls: "bg-amber-50 text-amber-700 ring-amber-200 dark:bg-amber-500/10 dark:text-amber-300 dark:ring-amber-500/20", color: "#f59e0b" },
+      flipkart: { label: "Flipkart", cls: "bg-blue-50 text-blue-700 ring-blue-200 dark:bg-blue-500/10 dark:text-blue-300 dark:ring-blue-500/20", color: "#3b82f6" },
+      blinkit: { label: "Blinkit", cls: "bg-emerald-50 text-emerald-700 ring-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-300 dark:ring-emerald-500/20", color: "#10b981" },
+      other: { label: "Other apps", cls: "bg-slate-100 text-slate-700 ring-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700", color: "#6366f1" },
+    };
+    const STATUS_META = {
+      Delivered: "bg-emerald-50 text-emerald-700 ring-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-300 dark:ring-emerald-500/20",
+      Shipped: "bg-sky-50 text-sky-700 ring-sky-200 dark:bg-sky-500/10 dark:text-sky-300 dark:ring-sky-500/20",
+      Processing: "bg-amber-50 text-amber-700 ring-amber-200 dark:bg-amber-500/10 dark:text-amber-300 dark:ring-amber-500/20",
+      Cancelled: "bg-rose-50 text-rose-700 ring-rose-200 dark:bg-rose-500/10 dark:text-rose-300 dark:ring-rose-500/20",
+    };
+    const FIRST = ["Rahul", "Priya", "Aman", "Sneha", "Vikram", "Anjali", "Rohit", "Pooja", "Karan", "Neha", "Arjun", "Kavya", "Sahil", "Ritika", "Manish", "Divya", "Aditya", "Isha", "Nikhil", "Meera"];
+    const LAST = ["Kumar", "Sharma", "Singh", "Verma", "Gupta", "Mishra", "Yadav", "Jha", "Patel", "Reddy", "Nair", "Das"];
+    const CITIES = ["Patna", "Delhi", "Mumbai", "Bengaluru", "Kolkata", "Lucknow", "Pune", "Hyderabad", "Jaipur", "Ranchi", "Varanasi", "Gaya"];
+    const PRODUCTS = [
+      ["Apple iPhone 15 (128GB)", 69999, "amazon"], ["Samsung Galaxy S24 Ultra", 129999, "flipkart"], ["boAt Nirvana Ion ANC", 2199, "amazon"],
+      ["Amul Taaza Milk 1L", 54, "blinkit"], ["Maggi Masala Noodles x12", 168, "blinkit"], ["Nike Downshifter 12", 2499, "flipkart"],
+      ["Philips Air Fryer HD9200", 5999, "amazon"], ["Fastrack Limitless FS1", 1999, "amazon"], ["Puma Round Neck Tee", 649, "flipkart"],
+      ["Fortune Sunflower Oil 1L", 135, "blinkit"], ["Prestige Mixer Grinder", 2899, "flipkart"], ["Cadbury Dairy Milk Silk", 175, "blinkit"],
+      ["Swiggy dinner order", 486, "other"], ["IRCTC Tatkal ticket", 1245, "other"], ["Myntra festive kurta", 1299, "other"], ["Uber Premier ride", 342, "other"],
+    ];
+    const STATUSES = ["Delivered", "Delivered", "Delivered", "Shipped", "Shipped", "Processing", "Cancelled"];
+
+    const DAY = 864e5;
+    const now = Date.now();
+    const sampleOrders = Array.from({ length: 1400 }, (_, i) => {
+      const [title, price, store] = pick(PRODUCTS);
+      const qty = price < 500 ? between(1, 6) : 1;
+      const age = Math.floor(Math.pow(rand(), 1.12) * 180 * DAY);
+      return {
+        id: "SR1-" + (8452310 - i * 7),
+        createdAt: new Date(now - age).toISOString(),
+        customer: pick(FIRST) + " " + pick(LAST),
+        city: pick(CITIES),
+        store,
+        items: [{ title, qty, price }],
+        total: price * qty,
+        status: age < 2 * DAY ? pick(["Processing", "Shipped"]) : pick(STATUSES),
+        source: "sample",
+      };
+    });
+
+    function localOrders() {
+      try {
+        return JSON.parse(localStorage.getItem("sr1_orders") || "[]").map((o) => {
+          const stores = [...new Set((o.items || []).map((it) => it.platform).filter(Boolean))];
+          return { ...o, store: stores.length === 1 && STORE_META[stores[0]] ? stores[0] : stores.length ? stores[0] : "other", status: o.status || "Processing", source: "site", city: (o.city || "").split(",")[0] };
+        });
+      } catch { return []; }
+    }
+    const ORDERS = [...localOrders(), ...sampleOrders].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+    const CUSTOMERS = (() => {
+      const map = new Map();
+      ORDERS.forEach((o) => {
+        const c = map.get(o.customer) || { name: o.customer, city: o.city, orders: 0, ltv: 0, last: o.createdAt };
+        c.orders++; c.ltv += o.status === "Cancelled" ? 0 : o.total;
+        if (o.createdAt > c.last) c.last = o.createdAt;
+        map.set(o.customer, c);
+      });
+      return [...map.values()].map((c) => ({ ...c, plan: c.ltv > 150000 ? "SR1 Prime+" : c.ltv > 40000 ? "SR1 Prime" : "Free", points: Math.round(c.ltv / 25) })).sort((a, b) => b.ltv - a.ltv);
+    })();
+
+    const ALERTS = Array.from({ length: 14 }, () => {
+      const [title, price, store] = pick(PRODUCTS.filter((p) => p[1] > 500));
+      const target = Math.round(price * (0.78 + rand() * 0.15));
+      const current = Math.round(price * (0.85 + rand() * 0.2));
+      return { title, store, customer: pick(FIRST) + " " + pick(LAST), current, target, status: current <= target ? "Triggered" : rand() > 0.2 ? "Watching" : "Paused" };
+    });
+
+    const badge = (text, cls) => `<span class="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-semibold ring-1 ${cls}">${text}</span>`;
+    const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+    const fmtDate = (iso) => new Date(iso).toLocaleDateString("en-IN", { day: "2-digit", month: "short" });
+    const ago = (iso) => { const m = Math.max(1, Math.round((now - new Date(iso)) / 6e4)); return m < 60 ? m + "m ago" : m < 1440 ? Math.round(m / 60) + "h ago" : Math.round(m / 1440) + "d ago"; };
+    const storeBadge = (s) => badge((STORE_META[s] || STORE_META.other).label, (STORE_META[s] || STORE_META.other).cls);
+    const toast = (msg) => { const t = $("#toast"); t.textContent = msg; t.classList.remove("hidden"); clearTimeout(t._h); t._h = setTimeout(() => t.classList.add("hidden"), 2200); };
+
+    // ---------- Navigation ----------
+    const VIEW_META = {
+      overview: ["Overview", "Real-time performance across all SR1 platforms"],
+      orders: ["Orders", "Every order routed through SR1"],
+      platforms: ["Platforms", "Manage the 86+ integrated partner apps"],
+      customers: ["Customers", "Your most valuable shoppers"],
+      alerts: ["Price Alerts", "Customer price-drop watchlists"],
+      settings: ["Settings", "Store configuration and security"],
+    };
+    function showView(view) {
+      $$("[data-panel]").forEach((p) => p.classList.toggle("hidden", p.dataset.panel !== view));
+      $$(".nav-item").forEach((b) => b.classList.toggle("active", b.dataset.view === view));
+      $("#view-title").textContent = VIEW_META[view][0];
+      $("#view-sub").textContent = VIEW_META[view][1];
+      $("#profile-menu").classList.add("hidden");
+      closeSidebar();
+      history.replaceState(null, "", "#" + view);
+      window.scrollTo({ top: 0 });
+    }
+    $$("[data-view]").forEach((b) => b.addEventListener("click", () => showView(b.dataset.view)));
+    const sidebar = $("#sidebar"), backdrop = $("#sidebar-backdrop");
+    function closeSidebar() { sidebar.classList.add("-translate-x-full"); backdrop.classList.add("hidden"); }
+    $("#menu-btn").addEventListener("click", () => { sidebar.classList.remove("-translate-x-full"); backdrop.classList.remove("hidden"); });
+    backdrop.addEventListener("click", closeSidebar);
+    $("#profile-btn").addEventListener("click", (e) => { e.stopPropagation(); $("#profile-menu").classList.toggle("hidden"); });
+    document.addEventListener("click", () => $("#profile-menu").classList.add("hidden"));
+    $("#notif-btn").addEventListener("click", () => toast(`${ALERTS.filter((a) => a.status === "Triggered").length} price alerts triggered · ${ORDERS.filter((o) => o.status === "Processing").length} orders processing`));
+
+    // ---------- Theme ----------
+    const applyTheme = (dark) => { document.documentElement.classList.toggle("dark", dark); localStorage.setItem("sr1_admin_theme", dark ? "dark" : "light"); renderCharts(); };
+    $("#theme-btn").addEventListener("click", () => applyTheme(!document.documentElement.classList.contains("dark")));
+    if (localStorage.getItem("sr1_admin_theme") === "dark") document.documentElement.classList.add("dark");
+
+    // ---------- Overview ----------
+    let range = 30;
+    const inRange = (o, days, offset = 0) => { const age = now - new Date(o.createdAt); return age >= offset * DAY && age < (offset + days) * DAY; };
+    function stats(days, offset = 0) {
+      const list = ORDERS.filter((o) => inRange(o, days, offset));
+      const valid = list.filter((o) => o.status !== "Cancelled");
+      const revenue = valid.reduce((s, o) => s + o.total, 0);
+      return { list, revenue, orders: list.length, aov: valid.length ? revenue / valid.length : 0, customers: new Set(list.map((o) => o.customer)).size };
+    }
+    const delta = (a, b) => (b ? ((a - b) / b) * 100 : 100);
+
+    function renderKpis() {
+      const cur = stats(range), prev = stats(range, range);
+      const kpis = [
+        ["Total revenue", compact(cur.revenue), delta(cur.revenue, prev.revenue), "M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"],
+        ["Orders", cur.orders.toLocaleString("en-IN"), delta(cur.orders, prev.orders), "M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"],
+        ["Avg. order value", inr(cur.aov), delta(cur.aov, prev.aov), "M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"],
+        ["Active customers", cur.customers.toLocaleString("en-IN"), delta(cur.customers, prev.customers), "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"],
+      ];
+      $("#kpi-grid").innerHTML = kpis.map(([label, value, d, icon]) => `
+        <div class="card p-5">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-medium text-slate-500">${label}</span>
+            <span class="w-9 h-9 rounded-lg bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-300 flex items-center justify-center"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="${icon}"/></svg></span>
+          </div>
+          <div class="display text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white mt-2">${value}</div>
+          <div class="mt-1 text-xs"><span class="font-semibold ${d >= 0 ? "text-emerald-600" : "text-rose-600"}">${d >= 0 ? "▲" : "▼"} ${Math.abs(d).toFixed(1)}%</span> <span class="text-slate-500">vs previous ${range}d</span></div>
+        </div>`).join("");
+      $$(".range-btn").forEach((b) => { const on = Number(b.dataset.range) === range; b.className = "range-btn px-3 py-1.5 rounded-md " + (on ? "bg-slate-900 text-white dark:bg-white dark:text-slate-900" : "text-slate-600 dark:text-slate-400 hover:text-slate-900"); });
+    }
+
+    let charts = {};
+    function renderCharts() {
+      if (!window.Chart) return;
+      const dark = document.documentElement.classList.contains("dark");
+      const grid = dark ? "rgba(148,163,184,.12)" : "rgba(15,23,42,.06)";
+      const tick = dark ? "#94a3b8" : "#64748b";
+      Object.values(charts).forEach((c) => c.destroy());
+
+      const buckets = range <= 30 ? range : Math.ceil(range / 7);
+      const size = range <= 30 ? 1 : 7;
+      const labels = [], rev = [], cnt = [];
+      for (let i = buckets - 1; i >= 0; i--) {
+        const list = ORDERS.filter((o) => inRange(o, size, i * size));
+        labels.push(new Date(now - i * size * DAY).toLocaleDateString("en-IN", { day: "2-digit", month: "short" }));
+        rev.push(list.filter((o) => o.status !== "Cancelled").reduce((s, o) => s + o.total, 0));
+        cnt.push(list.length);
+      }
+      const ctx = $("#revenue-chart").getContext("2d");
+      const grad = ctx.createLinearGradient(0, 0, 0, 280);
+      grad.addColorStop(0, "rgba(99,102,241,.35)"); grad.addColorStop(1, "rgba(99,102,241,0)");
+      charts.revenue = new Chart(ctx, {
+        data: { labels, datasets: [
+          { type: "line", label: "Revenue", data: rev, borderColor: "#6366f1", backgroundColor: grad, fill: true, tension: .35, pointRadius: 0, borderWidth: 2.5, yAxisID: "y" },
+          { type: "bar", label: "Orders", data: cnt, backgroundColor: "rgba(52,211,153,.55)", borderRadius: 4, yAxisID: "y1", maxBarThickness: 14 },
+        ] },
+        options: { maintainAspectRatio: false, interaction: { mode: "index", intersect: false }, plugins: { legend: { display: false }, tooltip: { callbacks: { label: (c) => c.dataset.label + ": " + (c.datasetIndex === 0 ? inr(c.raw) : c.raw) } } },
+          scales: { x: { grid: { display: false }, ticks: { color: tick, maxTicksLimit: 8 } }, y: { grid: { color: grid }, ticks: { color: tick, callback: (v) => compact(v) } }, y1: { position: "right", grid: { display: false }, ticks: { color: tick } } } },
+      });
+
+      const cur = stats(range).list;
+      const byStore = Object.keys(STORE_META).map((k) => cur.filter((o) => o.store === k).length);
+      charts.store = new Chart($("#store-chart"), {
+        type: "doughnut",
+        data: { labels: Object.values(STORE_META).map((m) => m.label), datasets: [{ data: byStore, backgroundColor: Object.values(STORE_META).map((m) => m.color), borderWidth: 0 }] },
+        options: { maintainAspectRatio: false, cutout: "72%", plugins: { legend: { display: false } } },
+      });
+      const total = byStore.reduce((a, b) => a + b, 0) || 1;
+      $("#store-legend").innerHTML = Object.values(STORE_META).map((m, i) => `
+        <div class="flex items-center justify-between"><span class="flex items-center gap-2 text-slate-600 dark:text-slate-400"><span class="w-2.5 h-2.5 rounded-full" style="background:${m.color}"></span>${m.label}</span><span class="font-semibold text-slate-900 dark:text-white">${((byStore[i] / total) * 100).toFixed(0)}%</span></div>`).join("");
+    }
+
+    function renderRecent() {
+      $("#recent-orders").innerHTML = ORDERS.slice(0, 7).map((o) => `
+        <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 cursor-pointer" data-order="${esc(o.id)}">
+          <td class="px-5 py-3 font-semibold text-slate-900 dark:text-white whitespace-nowrap">${esc(o.id)}${o.source === "site" ? ' <span class="ml-1 text-[10px] font-semibold text-indigo-600">LIVE</span>' : ""}</td>
+          <td class="px-3 py-3 whitespace-nowrap">${esc(o.customer)}</td>
+          <td class="px-3 py-3">${storeBadge(o.store)}</td>
+          <td class="px-3 py-3 text-right font-semibold whitespace-nowrap">${inr(o.total)}</td>
+          <td class="px-5 py-3">${badge(o.status, STATUS_META[o.status])}</td>
+        </tr>`).join("");
+    }
+
+    function renderCategories() {
+      const shares = [["Grocery & Quick Commerce", 31], ["Electronics & Mobiles", 27], ["Fashion & Lifestyle", 16], ["Food Delivery", 12], ["Travel & Mobility", 9], ["Others", 5]];
+      $("#top-categories").innerHTML = shares.map(([n, v], i) => `
+        <div><div class="flex justify-between text-xs mb-1.5"><span class="font-medium text-slate-700 dark:text-slate-300">${n}</span><span class="font-semibold text-slate-900 dark:text-white">${v}%</span></div>
+        <div class="h-2 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden"><div class="h-full rounded-full" style="width:${v * 3}%;background:${["#6366f1", "#818cf8", "#a5b4fc", "#34d399", "#38bdf8", "#cbd5e1"][i]}"></div></div></div>`).join("");
+    }
+
+    function renderActivity() {
+      const items = ORDERS.slice(0, 5).map((o) => [o.status === "Cancelled" ? "bg-rose-500" : "bg-emerald-500", `<strong class="font-semibold text-slate-900 dark:text-white">${esc(o.customer)}</strong> placed ${esc(o.id)} on ${(STORE_META[o.store] || STORE_META.other).label}`, ago(o.createdAt)]);
+      items.splice(2, 0, ["bg-amber-500", `Price alert triggered for <strong class="font-semibold text-slate-900 dark:text-white">${esc(ALERTS[0].title)}</strong>`, "just now"]);
+      $("#activity-feed").innerHTML = items.slice(0, 6).map(([dot, text, t]) => `
+        <li class="flex gap-3"><span class="mt-1.5 w-2 h-2 rounded-full shrink-0 ${dot}"></span><div class="min-w-0"><p class="text-slate-600 dark:text-slate-400 leading-snug">${text}</p><p class="text-[11px] text-slate-400 mt-0.5">${t}</p></div></li>`).join("");
+    }
+
+    $$(".range-btn").forEach((b) => b.addEventListener("click", () => { range = Number(b.dataset.range); renderKpis(); renderCharts(); }));
+    $("#export-btn").addEventListener("click", () => {
+      const rows = [["Order", "Date", "Customer", "City", "Store", "Amount", "Status"], ...stats(range).list.map((o) => [o.id, o.createdAt, o.customer, o.city, o.store, o.total, o.status])];
+      const blob = new Blob([rows.map((r) => r.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n")], { type: "text/csv" });
+      const a = Object.assign(document.createElement("a"), { href: URL.createObjectURL(blob), download: `sr1-orders-${range}d.csv` });
+      a.click(); URL.revokeObjectURL(a.href); toast("CSV exported");
+    });
+
+    // ---------- Orders ----------
+    let orderStatus = "All", orderPage = 0;
+    const PAGE = 12;
+    $("#status-filter").innerHTML = ["All", "Processing", "Shipped", "Delivered", "Cancelled"].map((s) => `<button data-status="${s}" class="status-btn px-3 py-1.5 rounded-md">${s}</button>`).join("");
+    function filteredOrders() {
+      const q = ($("#orders-search").value || $("#global-search").value).trim().toLowerCase();
+      const store = $("#orders-store").value;
+      return ORDERS.filter((o) => (orderStatus === "All" || o.status === orderStatus) && (store === "all" || o.store === store) && (!q || o.id.toLowerCase().includes(q) || o.customer.toLowerCase().includes(q)));
+    }
+    function renderOrders() {
+      const list = filteredOrders();
+      const pages = Math.max(1, Math.ceil(list.length / PAGE));
+      orderPage = Math.min(orderPage, pages - 1);
+      $$(".status-btn").forEach((b) => { b.className = "status-btn px-3 py-1.5 rounded-md " + (b.dataset.status === orderStatus ? "bg-white dark:bg-slate-900 shadow-sm text-slate-900 dark:text-white" : "text-slate-500 hover:text-slate-900"); });
+      $("#orders-table").innerHTML = list.slice(orderPage * PAGE, orderPage * PAGE + PAGE).map((o) => `
+        <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40">
+          <td class="px-5 py-3 font-semibold text-slate-900 dark:text-white whitespace-nowrap">${esc(o.id)}${o.source === "site" ? ' <span class="ml-1 text-[10px] font-semibold text-indigo-600">LIVE</span>' : ""}</td>
+          <td class="px-3 py-3 whitespace-nowrap text-slate-500">${fmtDate(o.createdAt)}</td>
+          <td class="px-3 py-3 whitespace-nowrap">${esc(o.customer)}</td>
+          <td class="px-3 py-3 whitespace-nowrap text-slate-500">${esc(o.city)}</td>
+          <td class="px-3 py-3">${storeBadge(o.store)}</td>
+          <td class="px-3 py-3 text-right">${o.items.reduce((s, i) => s + i.qty, 0)}</td>
+          <td class="px-3 py-3 text-right font-semibold whitespace-nowrap">${inr(o.total)}</td>
+          <td class="px-3 py-3">${badge(o.status, STATUS_META[o.status])}</td>
+          <td class="px-5 py-3 text-right"><button data-order="${esc(o.id)}" class="text-xs font-semibold text-indigo-600 hover:text-indigo-700">View</button></td>
+        </tr>`).join("") || `<tr><td colspan="9" class="px-5 py-10 text-center text-slate-500">No orders match your filters.</td></tr>`;
+      $("#orders-summary").textContent = `Showing ${list.length ? orderPage * PAGE + 1 : 0}–${Math.min(list.length, (orderPage + 1) * PAGE)} of ${list.length} orders`;
+      $("#nav-orders-count").textContent = ORDERS.filter((o) => o.status === "Processing").length;
+    }
+    $("#status-filter").addEventListener("click", (e) => { const b = e.target.closest("[data-status]"); if (b) { orderStatus = b.dataset.status; orderPage = 0; renderOrders(); } });
+    $("#orders-search").addEventListener("input", () => { orderPage = 0; renderOrders(); });
+    $("#orders-store").addEventListener("change", () => { orderPage = 0; renderOrders(); });
+    $("#orders-prev").addEventListener("click", () => { orderPage = Math.max(0, orderPage - 1); renderOrders(); });
+    $("#orders-next").addEventListener("click", () => { orderPage++; renderOrders(); });
+    $("#global-search").addEventListener("keydown", (e) => { if (e.key === "Enter") { $("#orders-search").value = e.target.value; showView("orders"); renderOrders(); } });
+
+    document.addEventListener("click", (e) => {
+      const row = e.target.closest("[data-order]");
+      if (!row) return;
+      const o = ORDERS.find((x) => x.id === row.dataset.order);
+      if (!o) return;
+      $("#drawer-title").textContent = o.id;
+      $("#drawer-body").innerHTML = `
+        <div class="flex items-center gap-2">${badge(o.status, STATUS_META[o.status])} ${storeBadge(o.store)} ${o.source === "site" ? badge("Placed on live site", "bg-indigo-50 text-indigo-700 ring-indigo-200") : ""}</div>
+        <div class="grid grid-cols-2 gap-4">
+          <div><div class="text-xs text-slate-500">Customer</div><div class="font-semibold">${esc(o.customer)}</div></div>
+          <div><div class="text-xs text-slate-500">City</div><div class="font-semibold">${esc(o.city)}</div></div>
+          <div><div class="text-xs text-slate-500">Placed</div><div class="font-semibold">${new Date(o.createdAt).toLocaleString("en-IN")}</div></div>
+          <div><div class="text-xs text-slate-500">Total</div><div class="font-semibold">${inr(o.total)}</div></div>
+        </div>
+        <div><div class="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Items</div>
+          <div class="rounded-xl ring-1 ring-slate-200 dark:ring-slate-800 divide-y divide-slate-100 dark:divide-slate-800">${o.items.map((i) => `<div class="flex justify-between p-3"><span>${i.qty} × ${esc(i.title)}</span><span class="font-semibold">${inr(i.price * i.qty)}</span></div>`).join("")}</div></div>
+        <div><div class="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-3">Timeline</div>
+          <ol class="relative border-l border-slate-200 dark:border-slate-700 ml-1.5 space-y-4">
+            ${["Order placed", "Payment confirmed", "Dispatched by store", "Delivered"].map((step, i) => { const done = o.status === "Delivered" || (o.status === "Shipped" && i < 3) || (o.status === "Processing" && i < 2) || (o.status === "Cancelled" && i < 1); return `<li class="ml-4"><span class="absolute -left-1.5 w-3 h-3 rounded-full ${done ? "bg-indigo-600" : "bg-slate-300 dark:bg-slate-600"}"></span><div class="${done ? "font-semibold" : "text-slate-500"}">${step}</div></li>`; }).join("")}
+          </ol></div>
+        <div class="flex gap-2 pt-2"><button onclick="toast('Invoice sent to customer')" class="flex-1 px-4 py-2 rounded-lg text-sm font-semibold bg-indigo-600 hover:bg-indigo-700 text-white">Send invoice</button><button onclick="toast('Support ticket created')" class="flex-1 px-4 py-2 rounded-lg text-sm font-semibold ring-1 ring-slate-200 dark:ring-slate-700">Contact customer</button></div>`;
+      $("#order-drawer").classList.remove("hidden");
+    });
+    $$("#order-drawer [data-close]").forEach((el) => el.addEventListener("click", () => $("#order-drawer").classList.add("hidden")));
+
+    // ---------- Platforms ----------
+    const disabled = new Set(JSON.parse(localStorage.getItem("sr1_disabled_platforms") || "[]"));
+    const PLATFORMS = Object.entries(CATEGORIES).flatMap(([cat, names]) => names.map((name) => ({ name, cat, orders: between(120, 9800), conv: (1.5 + rand() * 6).toFixed(1), latency: between(80, 420) })));
+    $("#platform-category").innerHTML = `<option value="all">All categories (${PLATFORMS.length})</option>` + Object.keys(CATEGORIES).map((c) => `<option>${c}</option>`).join("");
+    function kpiCard(label, value, sub) { return `<div class="card p-5"><div class="text-xs font-medium text-slate-500">${label}</div><div class="display text-2xl font-extrabold text-slate-900 dark:text-white mt-1">${value}</div><div class="text-xs text-slate-500 mt-1">${sub}</div></div>`; }
+    function renderPlatforms() {
+      $("#platform-kpis").innerHTML = kpiCard("Integrated platforms", PLATFORMS.length, "Across " + Object.keys(CATEGORIES).length + " categories") + kpiCard("Active", PLATFORMS.length - disabled.size, disabled.size + " paused") + kpiCard("Avg. API latency", Math.round(PLATFORMS.reduce((s, p) => s + p.latency, 0) / PLATFORMS.length) + " ms", "Last 24 hours") + kpiCard("Avg. conversion", (PLATFORMS.reduce((s, p) => s + Number(p.conv), 0) / PLATFORMS.length).toFixed(1) + "%", "Click → order");
+      const q = $("#platform-search").value.trim().toLowerCase(), cat = $("#platform-category").value;
+      $("#platform-grid").innerHTML = PLATFORMS.filter((p) => (cat === "all" || p.cat === cat) && (!q || p.name.toLowerCase().includes(q))).map((p) => {
+        const on = !disabled.has(p.name);
+        return `<div class="card p-4 flex items-center gap-4 ${on ? "" : "opacity-60"}">
+          <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-700 text-white font-bold text-sm flex items-center justify-center shrink-0">${esc(p.name.slice(0, 2).toUpperCase())}</div>
+          <div class="min-w-0 flex-1"><div class="font-semibold text-slate-900 dark:text-white truncate">${esc(p.name)}</div><div class="text-[11px] text-slate-500 truncate">${esc(p.cat)}</div>
+            <div class="flex gap-3 mt-1.5 text-[11px] text-slate-500"><span><strong class="text-slate-700 dark:text-slate-300">${p.orders.toLocaleString("en-IN")}</strong> orders</span><span><strong class="text-slate-700 dark:text-slate-300">${p.conv}%</strong> conv.</span><span><strong class="text-slate-700 dark:text-slate-300">${p.latency}ms</strong></span></div></div>
+          <button data-platform="${esc(p.name)}" class="toggle ${on ? "on" : ""}" aria-label="Toggle ${esc(p.name)}"></button>
+        </div>`;
+      }).join("") || `<div class="card p-10 text-center text-slate-500 sm:col-span-2 xl:col-span-3">No platforms found.</div>`;
+    }
+    $("#platform-grid").addEventListener("click", (e) => {
+      const b = e.target.closest("[data-platform]"); if (!b) return;
+      const n = b.dataset.platform;
+      disabled.has(n) ? disabled.delete(n) : disabled.add(n);
+      localStorage.setItem("sr1_disabled_platforms", JSON.stringify([...disabled]));
+      renderPlatforms(); toast(`${n} ${disabled.has(n) ? "paused" : "activated"}`);
+    });
+    $("#platform-search").addEventListener("input", renderPlatforms);
+    $("#platform-category").addEventListener("change", renderPlatforms);
+
+    // ---------- Customers ----------
+    function renderCustomers() {
+      const total = CUSTOMERS.reduce((s, c) => s + c.ltv, 0);
+      $("#customer-kpis").innerHTML = kpiCard("Total customers", CUSTOMERS.length, "Unique shoppers") + kpiCard("Prime members", CUSTOMERS.filter((c) => c.plan !== "Free").length, "SR1 Prime & Prime+") + kpiCard("Avg. lifetime value", inr(total / CUSTOMERS.length), "Per customer") + kpiCard("Repeat rate", Math.round((CUSTOMERS.filter((c) => c.orders > 1).length / CUSTOMERS.length) * 100) + "%", "2+ orders");
+      $("#customers-table").innerHTML = CUSTOMERS.map((c) => `
+        <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40">
+          <td class="px-5 py-3"><div class="flex items-center gap-3"><span class="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-500/15 text-indigo-700 dark:text-indigo-300 text-xs font-bold flex items-center justify-center">${esc(c.name.split(" ").map((w) => w[0]).join(""))}</span><span class="font-semibold text-slate-900 dark:text-white whitespace-nowrap">${esc(c.name)}</span></div></td>
+          <td class="px-3 py-3 text-slate-500">${esc(c.city)}</td>
+          <td class="px-3 py-3">${badge(c.plan, c.plan === "Free" ? STORE_META.other.cls : "bg-indigo-50 text-indigo-700 ring-indigo-200 dark:bg-indigo-500/10 dark:text-indigo-300 dark:ring-indigo-500/20")}</td>
+          <td class="px-3 py-3 text-right">${c.orders}</td>
+          <td class="px-3 py-3 text-right font-semibold whitespace-nowrap">${inr(c.ltv)}</td>
+          <td class="px-3 py-3 text-right">${c.points.toLocaleString("en-IN")}</td>
+          <td class="px-5 py-3 text-slate-500 whitespace-nowrap">${ago(c.last)}</td>
+        </tr>`).join("");
+    }
+
+    // ---------- Alerts ----------
+    function renderAlerts() {
+      $("#alert-kpis").innerHTML = kpiCard("Active alerts", ALERTS.filter((a) => a.status !== "Paused").length, "Being watched") + kpiCard("Triggered", ALERTS.filter((a) => a.status === "Triggered").length, "Target price hit") + kpiCard("Avg. target gap", Math.round(ALERTS.reduce((s, a) => s + Math.max(0, (a.current - a.target) / a.current), 0) / ALERTS.length * 100) + "%", "Above target") + kpiCard("Notifications sent", "1,284", "Last 30 days");
+      $("#alerts-table").innerHTML = ALERTS.map((a) => {
+        const pct = Math.min(100, Math.round((a.target / a.current) * 100));
+        return `<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40">
+          <td class="px-5 py-3 font-semibold text-slate-900 dark:text-white whitespace-nowrap">${esc(a.title)}</td>
+          <td class="px-3 py-3 whitespace-nowrap">${esc(a.customer)}</td>
+          <td class="px-3 py-3">${storeBadge(a.store)}</td>
+          <td class="px-3 py-3 text-right whitespace-nowrap">${inr(a.current)}</td>
+          <td class="px-3 py-3 text-right whitespace-nowrap font-semibold">${inr(a.target)}</td>
+          <td class="px-3 py-3 w-40"><div class="h-1.5 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden"><div class="h-full rounded-full ${a.status === "Triggered" ? "bg-emerald-500" : "bg-indigo-500"}" style="width:${pct}%"></div></div></td>
+          <td class="px-5 py-3">${badge(a.status, a.status === "Triggered" ? STATUS_META.Delivered : a.status === "Paused" ? STORE_META.other.cls : STATUS_META.Shipped)}</td>
+        </tr>`;
+      }).join("");
+    }
+
+    // ---------- Settings ----------
+    const form = $("#settings-form");
+    const saved = JSON.parse(localStorage.getItem("sr1_settings") || "{}");
+    Object.entries(saved).forEach(([k, v]) => { if (form.elements[k]) form.elements[k].value = v; });
+    $$("[data-toggle]").forEach((t) => {
+      if (saved["t_" + t.dataset.toggle] !== undefined) t.classList.toggle("on", saved["t_" + t.dataset.toggle]);
+      t.addEventListener("click", () => t.classList.toggle("on"));
+    });
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(form));
+      $$("[data-toggle]").forEach((t) => (data["t_" + t.dataset.toggle] = t.classList.contains("on")));
+      localStorage.setItem("sr1_settings", JSON.stringify(data));
+      toast("Settings saved");
+    });
+
+    // ---------- Boot ----------
+    renderKpis(); renderRecent(); renderCategories(); renderActivity(); renderOrders(); renderPlatforms(); renderCustomers(); renderAlerts();
+    if (window.Chart) { Chart.defaults.font.family = "Inter, sans-serif"; Chart.defaults.font.size = 11; }
+    renderCharts();
+    const initial = location.hash.slice(1);
+    if (VIEW_META[initial]) showView(initial);
+  </script>
+</body>
+</html>
