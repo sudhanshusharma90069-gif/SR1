@@ -138,18 +138,15 @@
     if (params.get("logged_out")) showNotice("You have been signed out.", "ok");
 
     const firebaseAdmin = SR1Auth.mode === "firebase";
-    if (firebaseAdmin) {
-      document.getElementById("username-label").textContent = "Admin email";
-      const u = document.getElementById("username");
-      u.type = "email"; u.value = ""; u.autocomplete = "email"; u.placeholder = "admin@example.com";
-    }
+    if (firebaseAdmin) document.getElementById("username-label").textContent = "Username or admin email";
     const loginForm = document.getElementById("login-form");
     const forgotPane = document.getElementById("forgot-pane");
     document.getElementById("forgot-btn").addEventListener("click", () => {
       loginForm.classList.add("hidden");
       forgotPane.classList.remove("hidden");
       document.getElementById(firebaseAdmin ? "forgot-firebase" : "forgot-env").classList.remove("hidden");
-      if (firebaseAdmin) document.getElementById("forgot-email").value = document.getElementById("username").value;
+      const typed = document.getElementById("username").value;
+      if (firebaseAdmin && typed.includes("@")) document.getElementById("forgot-email").value = typed;
       notice.classList.add("hidden");
     });
     document.getElementById("forgot-back").addEventListener("click", () => {
@@ -187,7 +184,7 @@
           username: document.getElementById("username").value,
           password: document.getElementById("password").value,
         };
-        if (firebaseAdmin) {
+        if (firebaseAdmin && payload.username.includes("@")) {
           try {
             await SR1Auth.signIn(payload.username, payload.password);
           } catch (err) {

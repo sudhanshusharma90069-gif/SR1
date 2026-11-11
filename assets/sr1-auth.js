@@ -106,7 +106,13 @@
     },
     async signOut() { await fb.auth().signOut(); },
     async sendReset(email) {
-      await fb.auth().sendPasswordResetEmail(email.trim(), { url: location.origin + "/signin?reset=done" });
+      try {
+        await fb.auth().sendPasswordResetEmail(email.trim(), { url: location.origin + "/signin?reset=done" });
+      } catch (e) {
+        if (e.code === "auth/user-not-found") return {};
+        if (e.code !== "auth/unauthorized-continue-uri" && e.code !== "auth/invalid-continue-uri") throw e;
+        await fb.auth().sendPasswordResetEmail(email.trim());
+      }
       return {};
     },
     async verifyReset(code) { return fb.auth().verifyPasswordResetCode(code); },
@@ -145,6 +151,8 @@
     "auth/expired-action-code": "This reset link is invalid or has expired.",
     "auth/invalid-action-code": "This reset link is invalid or has expired.",
     "auth/network-request-failed": "Network error. Please check your connection.",
+    "auth/operation-not-allowed": "Email sign-in is not enabled yet. Please try again later.",
+    "auth/configuration-not-found": "Email sign-in is not enabled yet. Please try again later.",
   };
 
   window.SR1Auth = {
