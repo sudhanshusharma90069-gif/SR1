@@ -6,6 +6,8 @@
   <meta name="robots" content="noindex">
   <title>SR1 Admin Console — Sign in</title>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="/assets/firebase-config.js"></script>
+  <script src="/assets/sr1-auth.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
@@ -72,12 +74,15 @@
 
         <form id="login-form" class="mt-6 space-y-4" autocomplete="on">
           <div>
-            <label for="username" class="block text-sm font-medium text-slate-700 mb-1.5">Username</label>
+            <label for="username" id="username-label" class="block text-sm font-medium text-slate-700 mb-1.5">Username</label>
             <input id="username" name="username" type="text" required autocomplete="username" value="admin"
               class="w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
           </div>
           <div>
-            <label for="password" class="block text-sm font-medium text-slate-700 mb-1.5">Password</label>
+            <div class="flex items-center justify-between mb-1.5">
+              <label for="password" class="block text-sm font-medium text-slate-700">Password</label>
+              <button type="button" id="forgot-btn" class="text-xs font-semibold text-indigo-600 hover:underline">Forgot password?</button>
+            </div>
             <div class="relative">
               <input id="password" name="password" type="password" required autocomplete="current-password" placeholder="••••••••"
                 class="w-full rounded-lg border border-slate-300 px-3.5 py-2.5 pr-16 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
@@ -90,9 +95,30 @@
           </button>
         </form>
 
+        <div id="forgot-pane" class="hidden mt-6">
+          <h3 class="display text-lg font-bold">Reset admin password</h3>
+          <div id="forgot-firebase" class="hidden">
+            <p class="text-sm text-slate-500 mt-1">Enter your admin email. We'll send a secure link to set a new password.</p>
+            <form id="forgot-form" class="mt-4 space-y-3">
+              <input id="forgot-email" type="email" required autocomplete="email" placeholder="admin@example.com"
+                class="w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+              <button type="submit" class="w-full rounded-lg bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 text-white font-semibold text-sm py-2.5 shadow-sm transition">Send reset link</button>
+            </form>
+          </div>
+          <div id="forgot-env" class="hidden mt-2 rounded-lg bg-slate-50 ring-1 ring-slate-200 p-3.5 text-sm text-slate-600 space-y-2">
+            <p>Email reset is not connected yet. The site owner can reset the admin password in a minute:</p>
+            <ol class="list-decimal pl-5 space-y-1 text-xs">
+              <li>Open <b>Vercel → sr1 project → Settings → Environment Variables</b>.</li>
+              <li>Edit <code class="bg-slate-200 px-1 rounded">ADMIN_PASSWORD</code> and save a new password.</li>
+              <li>Redeploy the latest deployment, then sign in with the new password.</li>
+            </ol>
+          </div>
+          <button type="button" id="forgot-back" class="mt-4 text-sm font-semibold text-indigo-600 hover:underline">← Back to sign in</button>
+        </div>
+
         <div class="mt-8 flex items-center justify-between text-xs text-slate-500">
           <a href="/" class="hover:text-slate-900">← Back to SR1</a>
-          <span>Protected by server-side session</span>
+          <a href="/signin" class="hover:text-slate-900">Customer sign in</a>
         </div>
       </div>
     </section>
@@ -111,6 +137,39 @@
 
     if (params.get("logged_out")) showNotice("You have been signed out.", "ok");
 
+    const firebaseAdmin = SR1Auth.mode === "firebase";
+    if (firebaseAdmin) {
+      document.getElementById("username-label").textContent = "Admin email";
+      const u = document.getElementById("username");
+      u.type = "email"; u.value = ""; u.autocomplete = "email"; u.placeholder = "admin@example.com";
+    }
+    const loginForm = document.getElementById("login-form");
+    const forgotPane = document.getElementById("forgot-pane");
+    document.getElementById("forgot-btn").addEventListener("click", () => {
+      loginForm.classList.add("hidden");
+      forgotPane.classList.remove("hidden");
+      document.getElementById(firebaseAdmin ? "forgot-firebase" : "forgot-env").classList.remove("hidden");
+      if (firebaseAdmin) document.getElementById("forgot-email").value = document.getElementById("username").value;
+      notice.classList.add("hidden");
+    });
+    document.getElementById("forgot-back").addEventListener("click", () => {
+      forgotPane.classList.add("hidden");
+      loginForm.classList.remove("hidden");
+      notice.classList.add("hidden");
+    });
+    document.getElementById("forgot-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const btn = e.target.querySelector("button");
+      btn.disabled = true;
+      try {
+        await SR1Auth.sendReset(document.getElementById("forgot-email").value);
+        showNotice("If this email belongs to an admin, a password reset link has been sent.", "ok");
+      } catch (err) {
+        showNotice(SR1Auth.message(err), "error");
+      }
+      btn.disabled = false;
+    });
+
     document.getElementById("toggle-password").addEventListener("click", (e) => {
       const input = document.getElementById("password");
       const show = input.type === "password";
@@ -124,14 +183,26 @@
       btn.disabled = true;
       btn.textContent = "Signing in…";
       try {
+        let payload = {
+          username: document.getElementById("username").value,
+          password: document.getElementById("password").value,
+        };
+        if (firebaseAdmin) {
+          try {
+            await SR1Auth.signIn(payload.username, payload.password);
+          } catch (err) {
+            showNotice(SR1Auth.message(err), "error");
+            btn.disabled = false;
+            btn.textContent = "Sign in to dashboard";
+            return;
+          }
+          payload = { idToken: await SR1Auth.idToken() };
+        }
         const res = await fetch("/api/login", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: "same-origin",
-          body: JSON.stringify({
-            username: document.getElementById("username").value,
-            password: document.getElementById("password").value,
-          }),
+          body: JSON.stringify(payload),
         });
         const data = await res.json().catch(() => ({}));
         if (res.ok && data.ok) {

@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <title>My SR1 Account</title>
+  <script src="/assets/sr1-theme.js"></script>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script>tailwind.config = { darkMode: "class" };</script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+    .display { font-family: 'Plus Jakarta Sans', 'Inter', sans-serif; letter-spacing: -0.02em; }
+    .nav-item.active { background: rgba(99, 102, 241, .12); color: #4f46e5; }
+    .dark .nav-item.active { background: rgba(99, 102, 241, .18); color: #c7d2fe; }
+    .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 16px; box-shadow: 0 1px 2px rgba(16,24,40,.04); }
+    .dark .card { background: #0f172a; border-color: #1e293b; }
+    .field { width: 100%; border-radius: .5rem; border: 1px solid #cbd5e1; padding: .55rem .8rem; font-size: .875rem; background: #fff; color: #0f172a; }
+    .dark .field { background: #020617; border-color: #334155; color: #e2e8f0; }
+    .field:focus { outline: none; border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99,102,241,.25); }
+    .btn { border-radius: .5rem; font-weight: 600; font-size: .8125rem; padding: .5rem .9rem; transition: .15s; }
+    .btn-primary { background: #4f46e5; color: #fff; } .btn-primary:hover { background: #4338ca; }
+    .btn-ghost { border: 1px solid #e2e8f0; } .dark .btn-ghost { border-color: #334155; }
+    .btn-ghost:hover { background: #f1f5f9; } .dark .btn-ghost:hover { background: #1e293b; }
+    [data-view-panel] { display: none; } [data-view-panel].active { display: block; }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 dark:bg-slate-950 dark:text-slate-200">
+  <div id="boot" class="fixed inset-0 z-[60] flex items-center justify-center bg-slate-100 dark:bg-slate-950 text-sm text-slate-500">Loading your account…</div>
+
+  <div class="min-h-screen flex">
+    <!-- SIDEBAR -->
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col -translate-x-full lg:translate-x-0 transition-transform">
+      <a href="/" class="flex items-center gap-3 px-5 h-16 border-b border-slate-200 dark:border-slate-800">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-700 flex items-center justify-center display font-extrabold text-white text-sm">SR1</div>
+        <div>
+          <div class="display font-bold text-slate-900 dark:text-white text-sm leading-tight">My SR1</div>
+          <div class="text-[11px] text-slate-500">Personal shopping hub</div>
+        </div>
+      </a>
+      <nav class="flex-1 overflow-y-auto px-3 py-4 space-y-1 text-sm text-slate-600 dark:text-slate-400">
+        <button data-view="overview" class="nav-item w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 font-medium"><span class="w-5 text-center">🏠</span>Overview</button>
+        <button data-view="orders" class="nav-item w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 font-medium"><span class="w-5 text-center">📦</span>My Orders <span id="nav-orders-count" class="ml-auto text-[10px] font-bold bg-indigo-100 text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-200 px-1.5 py-0.5 rounded">0</span></button>
+        <button data-view="wishlist" class="nav-item w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 font-medium"><span class="w-5 text-center">❤️</span>Wishlist</button>
+        <button data-view="alerts" class="nav-item w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 font-medium"><span class="w-5 text-center">🔔</span>Price Alerts</button>
+        <button data-view="rewards" class="nav-item w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 font-medium"><span class="w-5 text-center">🏆</span>Rewards</button>
+        <button data-view="profile" class="nav-item w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 font-medium"><span class="w-5 text-center">👤</span>Profile &amp; Security</button>
+        <div class="pt-4 mt-4 border-t border-slate-200 dark:border-slate-800">
+          <a href="/" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 font-medium"><span class="w-5 text-center">🛍️</span>Continue shopping</a>
+        </div>
+      </nav>
+      <div class="p-4 border-t border-slate-200 dark:border-slate-800">
+        <div class="rounded-xl bg-gradient-to-br from-indigo-600 to-indigo-800 text-white p-3.5">
+          <div class="text-[11px] text-indigo-200">SR1 Coins</div>
+          <div id="side-coins" class="display text-xl font-extrabold">0</div>
+          <div id="side-tier" class="text-[11px] text-indigo-200 mt-0.5">Silver member</div>
+        </div>
+      </div>
+    </aside>
+    <div id="backdrop" class="fixed inset-0 z-30 bg-slate-900/50 hidden lg:hidden"></div>
+
+    <div class="flex-1 lg:pl-64 min-w-0">
+      <!-- HEADER -->
+      <header class="sticky top-0 z-20 h-16 bg-white/85 dark:bg-slate-900/85 backdrop-blur border-b border-slate-200 dark:border-slate-800 flex items-center gap-3 px-4 md:px-8">
+        <button id="menu-btn" class="lg:hidden w-9 h-9 rounded-lg btn-ghost flex items-center justify-center" aria-label="Open menu">☰</button>
+        <div class="min-w-0">
+          <div id="view-title" class="display font-bold text-slate-900 dark:text-white truncate">Overview</div>
+          <div id="greeting" class="text-xs text-slate-500 truncate"></div>
+        </div>
+        <span class="hidden md:block ml-3"><span id="demo-pill" class="hidden text-[10px] font-bold uppercase tracking-wider bg-amber-100 text-amber-800 dark:bg-amber-500/15 dark:text-amber-300 px-2 py-1 rounded">Demo account</span></span>
+        <div class="ml-auto flex items-center gap-2">
+          <button id="theme-btn" class="w-9 h-9 rounded-lg btn-ghost flex items-center justify-center" title="Toggle dark / light mode" aria-label="Toggle dark / light mode">
+            <svg class="w-5 h-5 dark:hidden" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+            <svg class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+          </button>
+          <div class="relative">
+            <button id="profile-btn" class="flex items-center gap-2 rounded-lg pl-1 pr-2 py-1 hover:bg-slate-100 dark:hover:bg-slate-800">
+              <span id="avatar" class="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center text-xs font-bold">U</span>
+              <span id="header-name" class="hidden sm:block text-sm font-semibold"></span>
+            </button>
+            <div id="profile-menu" class="hidden absolute right-0 mt-2 w-56 card p-1.5 text-sm">
+              <div class="px-3 py-2 border-b border-slate-100 dark:border-slate-800 mb-1">
+                <div id="menu-name" class="font-semibold"></div>
+                <div id="menu-email" class="text-xs text-slate-500 truncate"></div>
+              </div>
+              <button data-view="profile" class="w-full text-left px-3 py-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800">Profile &amp; Security</button>
+              <a href="/" class="block px-3 py-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800">Back to shop</a>
+              <button class="signout-btn w-full text-left px-3 py-2 rounded-md text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-500/10">Sign out</button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main class="p-4 md:p-8 max-w-7xl mx-auto">
+        <!-- OVERVIEW -->
+        <section data-view-panel="overview" class="space-y-6">
+          <div class="rounded-2xl bg-gradient-to-br from-slate-900 via-indigo-950 to-indigo-800 text-white p-6 md:p-8 relative overflow-hidden">
+            <div class="absolute -right-16 -top-16 w-64 h-64 rounded-full bg-indigo-500/30 blur-3xl"></div>
+            <div class="relative flex flex-col md:flex-row md:items-end gap-4 justify-between">
+              <div>
+                <div class="text-xs text-indigo-200 font-semibold uppercase tracking-widest">Welcome back</div>
+                <h1 id="hero-name" class="display text-2xl md:text-3xl font-extrabold mt-1"></h1>
+                <p class="text-sm text-indigo-100/80 mt-2 max-w-lg">Your orders, wishlist, price alerts and rewards across 86+ apps — all in one place.</p>
+              </div>
+              <div class="flex gap-2">
+                <a href="/" class="btn bg-white text-slate-900 hover:bg-slate-100">Start shopping</a>
+                <button data-view="alerts" class="btn bg-white/10 hover:bg-white/20 ring-1 ring-white/20">New price alert</button>
+              </div>
+            </div>
+          </div>
+
+          <div id="kpis" class="grid grid-cols-2 lg:grid-cols-4 gap-4"></div>
+
+          <div class="grid lg:grid-cols-3 gap-6">
+            <div class="card p-5 lg:col-span-2">
+              <div class="flex items-center justify-between">
+                <div>
+                  <h3 class="display font-bold">Monthly spending</h3>
+                  <p class="text-xs text-slate-500">Last 6 months</p>
+                </div>
+              </div>
+              <div class="h-64 mt-4"><canvas id="spend-chart"></canvas></div>
+            </div>
+            <div class="card p-5">
+              <h3 class="display font-bold">Spend by store</h3>
+              <p class="text-xs text-slate-500">Where you shop most</p>
+              <div class="h-64 mt-4 flex items-center justify-center"><canvas id="store-chart"></canvas><p id="store-empty" class="hidden text-sm text-slate-500">No orders yet</p></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="flex items-center justify-between p-5 pb-3">
+              <h3 class="display font-bold">Recent orders</h3>
+              <button data-view="orders" class="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline">View all →</button>
+            </div>
+            <div id="recent-orders"></div>
+          </div>
+        </section>
+
+        <!-- ORDERS -->
+        <section data-view-panel="orders" class="space-y-4">
+          <div class="card p-4 flex flex-col sm:flex-row gap-3 sm:items-center">
+            <input id="order-search" class="field sm:max-w-xs" placeholder="Search by order ID or product">
+            <select id="order-store" class="field sm:max-w-[200px]"><option value="">All stores</option></select>
+            <div class="sm:ml-auto text-xs text-slate-500" id="orders-summary"></div>
+          </div>
+          <div id="orders-list" class="space-y-3"></div>
+        </section>
+
+        <!-- WISHLIST -->
+        <section data-view-panel="wishlist" class="space-y-4">
+          <div class="card p-4 flex items-center justify-between">
+            <div>
+              <h3 class="display font-bold">Universal wishlist</h3>
+              <p class="text-xs text-slate-500">Items you saved with 🤍 on the SR1 store.</p>
+            </div>
+            <a href="/" class="btn btn-primary">Browse products</a>
+          </div>
+          <div id="wishlist-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+        </section>
+
+        <!-- ALERTS -->
+        <section data-view-panel="alerts" class="space-y-4">
+          <div class="card p-5">
+            <h3 class="display font-bold">Create a price alert</h3>
+            <p class="text-xs text-slate-500">We'll flag the product when it drops below your target price.</p>
+            <form id="alert-form" class="mt-4 grid sm:grid-cols-4 gap-3">
+              <input id="alert-product" class="field sm:col-span-2" required placeholder="Product, e.g. iPhone 15 128GB">
+              <select id="alert-store" class="field"><option>Any store</option><option>Amazon</option><option>Flipkart</option><option>Blinkit</option><option>Myntra</option><option>Croma</option><option>Nykaa</option></select>
+              <div class="flex gap-2">
+                <input id="alert-price" class="field" required type="number" min="1" placeholder="Target ₹">
+                <button class="btn btn-primary shrink-0" type="submit">Add</button>
+              </div>
+            </form>
+          </div>
+          <div id="alerts-list" class="space-y-3"></div>
+        </section>
+
+        <!-- REWARDS -->
+        <section data-view-panel="rewards" class="space-y-6">
+          <div class="grid md:grid-cols-3 gap-4">
+            <div class="card p-5 md:col-span-2 bg-gradient-to-br from-amber-400 to-orange-500 !border-0 text-white">
+              <div class="text-xs font-semibold uppercase tracking-widest text-white/80">SR1 Coins balance</div>
+              <div id="rw-coins" class="display text-4xl font-extrabold mt-1">0</div>
+              <div id="rw-value" class="text-sm text-white/90 mt-1"></div>
+              <div class="mt-5 text-xs text-white/90"><span id="rw-tier">Silver</span> · <span id="rw-next"></span></div>
+              <div class="mt-2 h-2 rounded-full bg-white/30 overflow-hidden"><div id="rw-progress" class="h-full bg-white rounded-full" style="width:0%"></div></div>
+            </div>
+            <div class="card p-5">
+              <h3 class="display font-bold">How you earn</h3>
+              <ul class="mt-3 space-y-2 text-sm text-slate-600 dark:text-slate-400">
+                <li>🎁 500 coins welcome bonus</li>
+                <li>🛒 1 coin for every ₹100 spent</li>
+                <li>💸 100 coins = ₹25 off at checkout</li>
+                <li>🥇 Gold at ₹25,000 · Platinum at ₹1,00,000</li>
+              </ul>
+            </div>
+          </div>
+          <div class="card">
+            <h3 class="display font-bold p-5 pb-3">Coins history</h3>
+            <div id="rw-history"></div>
+          </div>
+        </section>
+
+        <!-- PROFILE -->
+        <section data-view-panel="profile" class="grid lg:grid-cols-2 gap-6 items-start">
+          <div class="card p-5 space-y-4">
+            <h3 class="display font-bold">Profile</h3>
+            <form id="profile-form" class="space-y-3">
+              <div><label class="block text-sm font-medium mb-1.5" for="pf-name">Full name</label><input id="pf-name" class="field" required></div>
+              <div><label class="block text-sm font-medium mb-1.5" for="pf-email">Email</label><input id="pf-email" class="field opacity-70" disabled></div>
+              <div><label class="block text-sm font-medium mb-1.5" for="pf-phone">Mobile</label><input id="pf-phone" class="field" placeholder="+91 98xxxxxx10"></div>
+              <div><label class="block text-sm font-medium mb-1.5" for="pf-city">City</label><input id="pf-city" class="field" placeholder="New Delhi"></div>
+              <button class="btn btn-primary" type="submit">Save profile</button>
+            </form>
+          </div>
+          <div class="space-y-6">
+            <div class="card p-5 space-y-3">
+              <h3 class="display font-bold">Change password</h3>
+              <form id="password-form" class="space-y-3">
+                <input id="pw-current" type="password" class="field" required autocomplete="current-password" placeholder="Current password">
+                <input id="pw-new" type="password" class="field" required minlength="6" autocomplete="new-password" placeholder="New password (min 6 characters)">
+                <input id="pw-confirm" type="password" class="field" required minlength="6" autocomplete="new-password" placeholder="Confirm new password">
+                <div class="flex flex-wrap items-center gap-3">
+                  <button class="btn btn-primary" type="submit">Update password</button>
+                  <button type="button" id="send-reset" class="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline">Forgot current password? Email me a reset link</button>
+                </div>
+              </form>
+            </div>
+            <div class="card p-5 space-y-3">
+              <h3 class="display font-bold">Appearance</h3>
+              <div class="grid grid-cols-2 gap-3">
+                <button data-theme-choice="light" class="theme-choice rounded-xl border-2 p-3 text-left text-sm font-semibold"><div class="h-10 rounded-lg bg-slate-100 ring-1 ring-slate-200 mb-2"></div>☀️ Light</button>
+                <button data-theme-choice="dark" class="theme-choice rounded-xl border-2 p-3 text-left text-sm font-semibold"><div class="h-10 rounded-lg bg-slate-900 ring-1 ring-slate-700 mb-2"></div>🌙 Dark</button>
+              </div>
+            </div>
+            <div class="card p-5 flex items-center justify-between">
+              <div><h3 class="display font-bold">Sign out</h3><p class="text-xs text-slate-500">End your session on this device.</p></div>
+              <button class="signout-btn btn bg-rose-600 hover:bg-rose-700 text-white">Sign out</button>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <div id="toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 hidden rounded-lg bg-slate-900 text-white dark:bg-white dark:text-slate-900 text-sm font-medium px-4 py-2.5 shadow-lg"></div>
+
+  <script src="/assets/firebase-config.js"></script>
+  <script src="/assets/sr1-auth.js"></script>
+  <script>
+    const inr = (n) => "₹" + Math.round(n).toLocaleString("en-IN");
+    const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+    const read = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } };
+    const write = (k, v) => localStorage.setItem(k, JSON.stringify(v));
+    const TITLES = { overview: "Overview", orders: "My Orders", wishlist: "Wishlist", alerts: "Price Alerts", rewards: "Rewards", profile: "Profile & Security" };
+    const STATUS = ["Placed", "Packed", "Shipped", "Out for delivery", "Delivered"];
+    let user, orders = [], charts = {};
+
+    function toast(msg) {
+      const t = document.getElementById("toast");
+      t.textContent = msg; t.classList.remove("hidden");
+      clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.add("hidden"), 2600);
+    }
+
+    function orderStatus(o) {
+      const mins = (Date.now() - new Date(o.createdAt).getTime()) / 60000;
+      return STATUS[mins < 10 ? 0 : mins < 60 ? 1 : mins < 60 * 24 ? 2 : mins < 60 * 48 ? 3 : 4];
+    }
+    const statusClass = (s) => s === "Delivered" ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300" : "bg-indigo-100 text-indigo-700 dark:bg-indigo-500/15 dark:text-indigo-300";
+    const storeOf = (o) => [...new Set((o.items || []).map((i) => i.platform || "SR1"))];
+    const cap = (s) => String(s).charAt(0).toUpperCase() + String(s).slice(1);
+
+    function loadOrders() {
+      orders = read("sr1_orders", []).filter((o) => o.uid === user.uid);
+      document.getElementById("nav-orders-count").textContent = orders.length;
+    }
+    const spent = () => orders.reduce((s, o) => s + (o.total || 0), 0);
+    const coins = () => 500 + Math.floor(spent() / 100) - read(user.k("redeemed"), 0);
+    function tier() {
+      const s = spent();
+      if (s >= 100000) return { name: "Platinum", next: null, pct: 100 };
+      if (s >= 25000) return { name: "Gold", next: "Platinum", need: 100000 - s, pct: ((s - 25000) / 75000) * 100 };
+      return { name: "Silver", next: "Gold", need: 25000 - s, pct: (s / 25000) * 100 };
+    }
+
+    function showView(view) {
+      if (!TITLES[view]) view = "overview";
+      document.querySelectorAll("[data-view-panel]").forEach((p) => p.classList.toggle("active", p.dataset.viewPanel === view));
+      document.querySelectorAll(".nav-item").forEach((b) => b.classList.toggle("active", b.dataset.view === view));
+      document.getElementById("view-title").textContent = TITLES[view];
+      document.getElementById("profile-menu").classList.add("hidden");
+      closeSidebar();
+      if (location.hash !== "#" + view) history.replaceState(null, "", "#" + view);
+      render(view);
+      window.scrollTo({ top: 0 });
+    }
+
+    function orderRow(o, compact) {
+      const st = orderStatus(o);
+      const items = (o.items || []).map((i) => `${i.qty}× ${esc(i.title)}`).join(", ");
+      return `<div class="flex items-center gap-4 px-5 py-3.5 border-t border-slate-100 dark:border-slate-800">
+        <div class="w-10 h-10 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center">📦</div>
+        <div class="min-w-0 flex-1">
+          <div class="text-sm font-semibold">${esc(o.id)} <span class="text-xs font-normal text-slate-500">· ${new Date(o.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</span></div>
+          <div class="text-xs text-slate-500 truncate">${items}</div>
+        </div>
+        <span class="hidden sm:inline text-[11px] font-semibold px-2 py-0.5 rounded ${statusClass(st)}">${st}</span>
+        <div class="text-sm font-bold w-24 text-right">${inr(o.total)}</div>
+      </div>`;
+    }
+    const emptyState = (icon, title, sub, cta) => `<div class="card p-10 text-center"><div class="text-4xl">${icon}</div><div class="display font-bold mt-3">${title}</div><p class="text-sm text-slate-500 mt-1">${sub}</p>${cta || ""}</div>`;
+
+    function renderOverview() {
+      const alerts = read(user.k("alerts"), []);
+      const wl = read("sr1_wishlist", []);
+      const kpis = [
+        ["Total orders", orders.length, "📦", "orders"],
+        ["Total spent", inr(spent()), "💳", "orders"],
+        ["SR1 Coins", coins().toLocaleString("en-IN"), "🏆", "rewards"],
+        ["Price alerts", alerts.length, "🔔", "alerts"],
+      ];
+      document.getElementById("kpis").innerHTML = kpis.map(([l, v, i, view]) => `
+        <button data-view="${view}" class="card p-4 text-left hover:ring-2 hover:ring-indigo-500/30 transition">
+          <div class="flex items-center justify-between text-xs text-slate-500"><span>${l}</span><span>${i}</span></div>
+          <div class="display text-2xl font-extrabold mt-2 text-slate-900 dark:text-white">${v}</div>
+        </button>`).join("");
+      document.getElementById("recent-orders").innerHTML = orders.length
+        ? orders.slice(0, 5).map((o) => orderRow(o, true)).join("")
+        : `<div class="px-5 pb-6 text-sm text-slate-500">No orders yet. <a href="/" class="font-semibold text-indigo-600 dark:text-indigo-400 hover:underline">Place your first order →</a></div>`;
+      renderCharts();
+      bindViewLinks(document.getElementById("kpis"));
+    }
+
+    function renderCharts() {
+      const dark = document.documentElement.classList.contains("dark");
+      const grid = dark ? "#1e293b" : "#eef2f7", tick = dark ? "#94a3b8" : "#64748b";
+      const months = [...Array(6)].map((_, i) => { const d = new Date(); d.setDate(1); d.setMonth(d.getMonth() - 5 + i); return d; });
+      const monthly = months.map((m) => orders.filter((o) => { const d = new Date(o.createdAt); return d.getMonth() === m.getMonth() && d.getFullYear() === m.getFullYear(); }).reduce((s, o) => s + o.total, 0));
+      const byStore = {};
+      orders.forEach((o) => (o.items || []).forEach((i) => { const k = cap(i.platform || "SR1"); byStore[k] = (byStore[k] || 0) + i.price * i.qty; }));
+      Object.values(charts).forEach((c) => c.destroy());
+      charts.spend = new Chart(document.getElementById("spend-chart"), {
+        type: "bar",
+        data: { labels: months.map((m) => m.toLocaleDateString("en-IN", { month: "short" })), datasets: [{ data: monthly, backgroundColor: "#6366f1", borderRadius: 6, maxBarThickness: 36 }] },
+        options: { maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { callbacks: { label: (c) => inr(c.raw) } } }, scales: { x: { grid: { display: false }, ticks: { color: tick } }, y: { beginAtZero: true, suggestedMax: 1000, grid: { color: grid }, ticks: { color: tick, precision: 0, callback: (v) => "₹" + (v >= 1000 ? v / 1000 + "k" : v) } } } },
+      });
+      const labels = Object.keys(byStore);
+      document.getElementById("store-empty").classList.toggle("hidden", labels.length > 0);
+      document.getElementById("store-chart").classList.toggle("hidden", labels.length === 0);
+      if (labels.length) charts.store = new Chart(document.getElementById("store-chart"), {
+        type: "doughnut",
+        data: { labels, datasets: [{ data: Object.values(byStore), backgroundColor: ["#6366f1", "#f59e0b", "#10b981", "#3b82f6", "#ec4899", "#14b8a6"], borderWidth: 0 }] },
+        options: { maintainAspectRatio: false, cutout: "68%", plugins: { legend: { position: "bottom", labels: { color: tick, boxWidth: 10 } }, tooltip: { callbacks: { label: (c) => `${c.label}: ${inr(c.raw)}` } } } },
+      });
+    }
+
+    function renderOrders() {
+      const sel = document.getElementById("order-store");
+      const stores = [...new Set(orders.flatMap(storeOf))];
+      const keep = sel.value;
+      sel.innerHTML = `<option value="">All stores</option>` + stores.map((s) => `<option value="${esc(s)}">${esc(cap(s))}</option>`).join("");
+      sel.value = stores.includes(keep) ? keep : "";
+      const q = document.getElementById("order-search").value.trim().toLowerCase();
+      const list = orders.filter((o) => (!sel.value || storeOf(o).includes(sel.value)) && (!q || o.id.toLowerCase().includes(q) || (o.items || []).some((i) => i.title.toLowerCase().includes(q))));
+      document.getElementById("orders-summary").textContent = `${list.length} order${list.length === 1 ? "" : "s"} · ${inr(list.reduce((s, o) => s + o.total, 0))}`;
+      const box = document.getElementById("orders-list");
+      if (!orders.length) { box.innerHTML = emptyState("📦", "No orders yet", "Orders you place on SR1 while signed in will appear here.", `<a href="/" class="btn btn-primary inline-block mt-4">Start shopping</a>`); return; }
+      if (!list.length) { box.innerHTML = emptyState("🔍", "No matching orders", "Try a different search or store."); return; }
+      box.innerHTML = list.map((o) => {
+        const st = orderStatus(o), idx = STATUS.indexOf(st);
+        return `<details class="card overflow-hidden group">
+          <summary class="list-none cursor-pointer flex items-center gap-4 p-4">
+            <div class="w-10 h-10 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center">📦</div>
+            <div class="flex-1 min-w-0">
+              <div class="text-sm font-semibold">${esc(o.id)}</div>
+              <div class="text-xs text-slate-500">${new Date(o.createdAt).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" })} · ${storeOf(o).map(cap).join(", ")}</div>
+            </div>
+            <span class="text-[11px] font-semibold px-2 py-0.5 rounded ${statusClass(st)}">${st}</span>
+            <div class="text-sm font-bold w-24 text-right">${inr(o.total)}</div>
+          </summary>
+          <div class="border-t border-slate-100 dark:border-slate-800 p-4 grid md:grid-cols-2 gap-6">
+            <div>
+              <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Items</div>
+              ${(o.items || []).map((i) => `<div class="flex justify-between text-sm py-1"><span>${i.qty}× ${esc(i.title)} <span class="text-xs text-slate-500">(${esc(cap(i.platform || "SR1"))})</span></span><span class="font-semibold">${inr(i.price * i.qty)}</span></div>`).join("")}
+              <div class="text-xs text-slate-500 mt-3">Deliver to: ${esc(o.customer)}${o.city ? ", " + esc(o.city) : ""}</div>
+            </div>
+            <div>
+              <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Tracking</div>
+              <ol class="space-y-2">${STATUS.map((s, i) => `<li class="flex items-center gap-2 text-sm ${i <= idx ? "" : "text-slate-400"}"><span class="w-2.5 h-2.5 rounded-full ${i <= idx ? "bg-indigo-600" : "bg-slate-300 dark:bg-slate-700"}"></span>${s}</li>`).join("")}</ol>
+            </div>
+          </div>
+        </details>`;
+      }).join("");
+    }
+
+    function renderWishlist() {
+      const wl = read("sr1_wishlist", []);
+      const box = document.getElementById("wishlist-grid");
+      if (!wl.length) { box.innerHTML = `<div class="sm:col-span-2 lg:col-span-3">${emptyState("🤍", "Your wishlist is empty", "Tap 🤍 on any product in the SR1 store to save it here.")}</div>`; return; }
+      box.innerHTML = wl.map((p) => `<div class="card p-4 flex gap-4">
+        <div class="w-16 h-16 rounded-lg bg-slate-100 dark:bg-slate-800 overflow-hidden shrink-0"><span class="w-full h-full flex items-center justify-center text-3xl">${esc(p.icon || "🛍️")}</span></div>
+        <div class="min-w-0 flex-1">
+          <div class="text-sm font-semibold line-clamp-2">${esc(p.title)}</div>
+          <div class="text-xs text-slate-500 mt-0.5">${esc(cap(p.platform || "SR1"))}</div>
+          <div class="flex items-center justify-between mt-2">
+            <span class="font-bold">${inr(p.price)}</span>
+            <div class="flex gap-1.5">
+              <button data-alert-for="${esc(p.id)}" class="btn btn-ghost !px-2 !py-1 text-xs" title="Create price alert">🔔</button>
+              <button data-remove-wl="${esc(p.id)}" class="btn btn-ghost !px-2 !py-1 text-xs" title="Remove">✕</button>
+            </div>
+          </div>
+        </div>
+      </div>`).join("");
+      box.querySelectorAll("[data-remove-wl]").forEach((b) => b.onclick = () => {
+        write("sr1_wishlist", read("sr1_wishlist", []).filter((p) => p.id !== b.dataset.removeWl));
+        renderWishlist(); toast("Removed from wishlist");
+      });
+      box.querySelectorAll("[data-alert-for]").forEach((b) => b.onclick = () => {
+        const p = wl.find((x) => x.id === b.dataset.alertFor);
+        showView("alerts");
+        document.getElementById("alert-product").value = p.title;
+        document.getElementById("alert-price").value = Math.round(p.price * 0.9);
+        document.getElementById("alert-price").focus();
+      });
+    }
+
+    function renderAlerts() {
+      const alerts = read(user.k("alerts"), []);
+      const box = document.getElementById("alerts-list");
+      if (!alerts.length) { box.innerHTML = emptyState("🔔", "No price alerts yet", "Add a product above and set the price you want to pay."); return; }
+      box.innerHTML = alerts.map((a) => `<div class="card p-4 flex items-center gap-4">
+        <div class="w-10 h-10 rounded-lg bg-amber-100 dark:bg-amber-500/15 flex items-center justify-center">🔔</div>
+        <div class="flex-1 min-w-0">
+          <div class="text-sm font-semibold truncate">${esc(a.product)}</div>
+          <div class="text-xs text-slate-500">${esc(a.store)} · created ${new Date(a.createdAt).toLocaleDateString("en-IN")}</div>
+        </div>
+        <div class="text-right"><div class="text-[11px] text-slate-500">Target</div><div class="text-sm font-bold">${inr(a.target)}</div></div>
+        <span class="hidden sm:inline text-[11px] font-semibold px-2 py-0.5 rounded bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300">Watching</span>
+        <button data-del-alert="${a.id}" class="btn btn-ghost !px-2 !py-1 text-xs" title="Delete alert">✕</button>
+      </div>`).join("");
+      box.querySelectorAll("[data-del-alert]").forEach((b) => b.onclick = () => {
+        write(user.k("alerts"), read(user.k("alerts"), []).filter((a) => a.id !== b.dataset.delAlert));
+        renderAlerts(); toast("Alert deleted");
+      });
+    }
+
+    function renderRewards() {
+      const t = tier(), c = coins();
+      document.getElementById("rw-coins").textContent = c.toLocaleString("en-IN");
+      document.getElementById("rw-value").textContent = `Worth ${inr((c / 100) * 25)} off your next order`;
+      document.getElementById("rw-tier").textContent = t.name + " member";
+      document.getElementById("rw-next").textContent = t.next ? `Spend ${inr(t.need)} more to reach ${t.next}` : "Highest tier unlocked";
+      document.getElementById("rw-progress").style.width = Math.min(100, t.pct) + "%";
+      const rows = [{ label: "Welcome bonus", date: user.createdAt, pts: 500 }, ...orders.map((o) => ({ label: "Order " + o.id, date: o.createdAt, pts: Math.floor(o.total / 100) }))]
+        .sort((a, b) => new Date(b.date) - new Date(a.date));
+      document.getElementById("rw-history").innerHTML = rows.map((r) => `<div class="flex items-center justify-between px-5 py-3 border-t border-slate-100 dark:border-slate-800 text-sm">
+        <div><div class="font-medium">${esc(r.label)}</div><div class="text-xs text-slate-500">${r.date ? new Date(r.date).toLocaleDateString("en-IN") : ""}</div></div>
+        <div class="font-bold text-emerald-600 dark:text-emerald-400">+${r.pts}</div></div>`).join("");
+    }
+
+    function renderProfile() {
+      const p = read(user.k("profile"), {});
+      document.getElementById("pf-name").value = user.name || "";
+      document.getElementById("pf-email").value = user.email;
+      document.getElementById("pf-phone").value = p.phone || "";
+      document.getElementById("pf-city").value = p.city || "";
+      syncThemeChoice();
+    }
+    function syncThemeChoice() {
+      document.querySelectorAll(".theme-choice").forEach((b) => {
+        const on = b.dataset.themeChoice === SR1Theme.get();
+        b.className = "theme-choice rounded-xl border-2 p-3 text-left text-sm font-semibold " + (on ? "border-indigo-600" : "border-slate-200 dark:border-slate-700");
+      });
+    }
+
+    function renderSide() {
+      const t = tier();
+      document.getElementById("side-coins").textContent = coins().toLocaleString("en-IN");
+      document.getElementById("side-tier").textContent = t.name + " member";
+      const first = (user.name || user.email).split(" ")[0];
+      document.getElementById("greeting").textContent = user.email;
+      document.getElementById("hero-name").textContent = `Hi ${first} 👋`;
+      document.getElementById("header-name").textContent = user.name || user.email;
+      document.getElementById("menu-name").textContent = user.name || "";
+      document.getElementById("menu-email").textContent = user.email;
+      document.getElementById("avatar").textContent = (user.name || user.email).trim().split(/\s+/).map((w) => w[0]).slice(0, 2).join("").toUpperCase();
+    }
+
+    function render(view) {
+      renderSide();
+      ({ overview: renderOverview, orders: renderOrders, wishlist: renderWishlist, alerts: renderAlerts, rewards: renderRewards, profile: renderProfile })[view]();
+    }
+    const currentView = () => location.hash.slice(1) || "overview";
+
+    function bindViewLinks(root) {
+      root.querySelectorAll("[data-view]").forEach((b) => b.onclick = () => showView(b.dataset.view));
+    }
+    function closeSidebar() {
+      document.getElementById("sidebar").classList.add("-translate-x-full");
+      document.getElementById("backdrop").classList.add("hidden");
+    }
+
+    async function init() {
+      await SR1Auth.ready;
+      const u = SR1Auth.current();
+      if (!u) { location.replace("/signin?next=" + encodeURIComponent("/account" + location.hash)); return; }
+      user = { ...u, k: (s) => `sr1_u_${u.uid}_${s}` };
+      if (SR1Auth.mode === "demo") document.getElementById("demo-pill").classList.remove("hidden");
+      loadOrders();
+      bindViewLinks(document);
+      showView(currentView());
+      document.getElementById("boot").remove();
+    }
+
+    SR1Auth.onChange((u) => { if (!u && user) location.replace("/signin?logged_out=1"); });
+    window.addEventListener("hashchange", () => showView(currentView()));
+    window.addEventListener("storage", (e) => { if (user && (e.key === "sr1_orders" || e.key === "sr1_wishlist")) { loadOrders(); render(currentView()); } });
+    document.addEventListener("sr1:theme", () => { if (user) { syncThemeChoice(); if (currentView() === "overview") renderCharts(); } });
+
+    document.getElementById("theme-btn").onclick = () => SR1Theme.toggle();
+    document.querySelectorAll("[data-theme-choice]").forEach((b) => b.onclick = () => SR1Theme.set(b.dataset.themeChoice));
+    document.getElementById("menu-btn").onclick = () => {
+      document.getElementById("sidebar").classList.remove("-translate-x-full");
+      document.getElementById("backdrop").classList.remove("hidden");
+    };
+    document.getElementById("backdrop").onclick = closeSidebar;
+    document.getElementById("profile-btn").onclick = (e) => { e.stopPropagation(); document.getElementById("profile-menu").classList.toggle("hidden"); };
+    document.addEventListener("click", (e) => { if (!e.target.closest("#profile-menu")) document.getElementById("profile-menu").classList.add("hidden"); });
+    document.querySelectorAll(".signout-btn").forEach((b) => b.onclick = async () => { await SR1Auth.signOut(); location.replace("/signin?logged_out=1"); });
+    document.getElementById("order-search").oninput = renderOrders;
+    document.getElementById("order-store").onchange = renderOrders;
+
+    document.getElementById("alert-form").onsubmit = (e) => {
+      e.preventDefault();
+      const alerts = read(user.k("alerts"), []);
+      alerts.unshift({ id: "AL-" + Date.now(), product: document.getElementById("alert-product").value.trim(), store: document.getElementById("alert-store").value, target: Number(document.getElementById("alert-price").value), createdAt: new Date().toISOString() });
+      write(user.k("alerts"), alerts);
+      e.target.reset(); renderAlerts(); toast("Price alert created");
+    };
+    document.getElementById("profile-form").onsubmit = async (e) => {
+      e.preventDefault();
+      try {
+        await SR1Auth.updateName(document.getElementById("pf-name").value);
+        write(user.k("profile"), { phone: document.getElementById("pf-phone").value.trim(), city: document.getElementById("pf-city").value.trim() });
+        user = { ...SR1Auth.current(), k: user.k };
+        renderSide(); toast("Profile saved");
+      } catch (err) { toast(SR1Auth.message(err)); }
+    };
+    document.getElementById("password-form").onsubmit = async (e) => {
+      e.preventDefault();
+      const nw = document.getElementById("pw-new").value;
+      if (nw !== document.getElementById("pw-confirm").value) { toast("New passwords do not match"); return; }
+      try {
+        await SR1Auth.changePassword(document.getElementById("pw-current").value, nw);
+        e.target.reset(); toast("Password updated");
+      } catch (err) { toast(SR1Auth.message(err)); }
+    };
+    document.getElementById("send-reset").onclick = async () => {
+      try {
+        const res = await SR1Auth.sendReset(user.email);
+        if (res.demoLink) { location.href = res.demoLink; return; }
+        toast("Reset link sent to " + user.email);
+      } catch (err) { toast(SR1Auth.message(err)); }
+    };
+
+    init();
+  </script>
+</body>
+</html>
