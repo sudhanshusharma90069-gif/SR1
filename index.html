@@ -5,15 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SR1 - India's Mega Super Platform (Amazon, Flipkart, Blinkit & 86+ Apps)</title>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script>
+    tailwind.config = {
+      theme: { extend: {
+        fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'], display: ['"Plus Jakarta Sans"', 'Inter', 'sans-serif'] },
+        colors: { violet: {50:'#eef2ff',100:'#e0e7ff',200:'#c7d2fe',300:'#a5b4fc',400:'#818cf8',500:'#6366f1',600:'#4f46e5',700:'#4338ca',800:'#3730a3',900:'#312e81',950:'#1e1b4b'}, purple: {50:'#eef2ff',100:'#e0e7ff',200:'#c7d2fe',300:'#a5b4fc',400:'#818cf8',500:'#6366f1',600:'#4f46e5',700:'#4338ca',800:'#3730a3',900:'#312e81',950:'#1e1b4b'} }
+      } }
+    };
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
   <style>
     body {
       font-family: 'Inter', sans-serif;
     }
     .brand-font {
-      font-family: 'Outfit', sans-serif;
+      font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+      letter-spacing: -0.02em;
     }
     .custom-scroll::-webkit-scrollbar {
       width: 6px;
@@ -43,21 +52,39 @@
     .animate-pulse-fast {
       animation: pulse-fast 1.5s infinite;
     }
+      /* ---- SR1 professional theme layer ---- */
+    :root { --sr1-ink: #0b1220; --sr1-brand: #4f46e5; --sr1-surface: #f5f7fb; }
+    body { background: var(--sr1-surface); -webkit-font-smoothing: antialiased; }
+    ::selection { background: #c7d2fe; color: #1e1b4b; }
+    main > section {
+      border-radius: 20px !important;
+      border: 1px solid #e5e7eb !important;
+      box-shadow: 0 1px 2px rgba(16, 24, 40, .04), 0 8px 24px -12px rgba(16, 24, 40, .10) !important;
+    }
+    main > section#sr1-hero { border: 0 !important; box-shadow: 0 20px 50px -24px rgba(30, 27, 75, .55) !important; }
+    .sr1-grid-bg {
+      background-image: linear-gradient(rgba(148, 163, 184, .09) 1px, transparent 1px), linear-gradient(90deg, rgba(148, 163, 184, .09) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+    .card-hover-effect:hover { transform: translateY(-2px); box-shadow: 0 14px 30px -14px rgba(30, 27, 75, .25); }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--sr1-brand); outline-offset: 2px; }
+
   </style>
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+<body class="bg-[#f5f7fb] text-slate-800 min-h-screen flex flex-col">
 
   <!-- TOP ANNOUNCEMENT TICKER -->
-  <header class="bg-slate-900 text-white text-xs py-1.5 px-4 sticky top-0 z-50 shadow-sm border-b border-slate-800">
+  <header class="bg-slate-950 text-white text-xs py-1.5 px-4 sticky top-0 z-50 border-b border-white/5">
     <div class="max-w-7xl mx-auto flex items-center justify-between">
       <div class="flex items-center space-x-3 overflow-hidden text-ellipsis whitespace-nowrap">
-        <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500 text-slate-950 uppercase tracking-wide">SR1 Super App</span>
+        <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-500/20 text-indigo-200 ring-1 ring-indigo-400/30 uppercase tracking-wide">SR1 Super App</span>
         <span id="i18n-top-ticker" class="text-slate-300">🇮🇳 86+ Apps in One Place (Amazon, Flipkart, Blinkit, Swiggy, Zomato, Myntra & more)! Use Coupon: <strong class="text-amber-400">SR1FIRST</strong> (10% OFF)</span>
       </div>
       <div class="flex items-center space-x-3 shrink-0 text-slate-400">
         <!-- Language Switcher in Header -->
         <div class="flex items-center bg-slate-800 rounded-lg p-0.5 border border-slate-700">
-          <button id="lang-btn-en" data-lang="en" class="lang-switch-btn px-2 py-0.5 rounded text-[10px] font-extrabold bg-amber-400 text-slate-950 transition">EN</button>
+          <button id="lang-btn-en" data-lang="en" class="lang-switch-btn px-2 py-0.5 rounded text-[10px] font-extrabold bg-white text-slate-900 transition">EN</button>
           <button id="lang-btn-hi" data-lang="hi" class="lang-switch-btn px-2 py-0.5 rounded text-[10px] font-bold text-slate-300 hover:text-white transition">हिंदी</button>
           <button id="lang-btn-hg" data-lang="hg" class="lang-switch-btn px-2 py-0.5 rounded text-[10px] font-bold text-slate-300 hover:text-white transition">Hinglish</button>
         </div>
@@ -72,20 +99,20 @@
   </header>
 
   <!-- MAIN NAVIGATION BAR -->
-  <nav class="bg-white border-b border-slate-200 shadow-sm sticky top-7 z-40">
+  <nav class="bg-white/90 backdrop-blur-md border-b border-slate-200/80 shadow-[0_1px_0_rgba(16,24,40,.03)] sticky top-7 z-40">
     <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col md:flex-row items-center justify-between gap-3">
       
       <!-- Logo & Brand Identity -->
       <div class="flex items-center justify-between w-full md:w-auto">
         <div class="flex items-center space-x-3">
           <button id="logo-btn" class="flex items-center space-x-2 text-left group">
-            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 via-blue-600 to-emerald-600 flex items-center justify-center text-white font-black text-xl shadow-md group-hover:scale-105 transition-transform">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-800 ring-1 ring-indigo-900/10 flex items-center justify-center text-white font-black text-xl shadow-md group-hover:scale-105 transition-transform">
               <span class="brand-font">SR1</span>
             </div>
             <div>
               <div class="flex items-center space-x-1.5">
                 <span class="brand-font text-2xl font-extrabold tracking-tight text-slate-900">SR1</span>
-                <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-300 uppercase">Unified Hub</span>
+                <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-indigo-50 text-indigo-700 border border-indigo-100 uppercase">Unified Hub</span>
               </div>
               <p class="text-[11px] text-slate-500 font-medium leading-none">Amazon • Flipkart • Blinkit</p>
             </div>
@@ -94,14 +121,14 @@
 
         <!-- Mobile Quick Actions -->
         <div class="flex md:hidden items-center space-x-2">
-          <button id="mobile-lang-toggle-btn" class="px-2.5 py-1.5 text-xs font-extrabold text-amber-900 bg-amber-100 border border-amber-300 rounded-lg">
+          <button id="mobile-lang-toggle-btn" class="px-2.5 py-1.5 text-xs font-bold text-slate-700 bg-white ring-1 ring-slate-200 rounded-lg">
             🌐 EN/HI
           </button>
           <button id="mobile-cart-btn" class="relative p-2 text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
             </svg>
-            <span id="mobile-cart-count" class="absolute -top-1 -right-1 bg-amber-500 text-slate-900 text-xs font-black rounded-full h-5 w-5 flex items-center justify-center">0</span>
+            <span id="mobile-cart-count" class="absolute -top-1 -right-1 bg-indigo-600 text-white text-xs font-black rounded-full h-5 w-5 flex items-center justify-center">0</span>
           </button>
         </div>
       </div>
@@ -118,7 +145,7 @@
             type="text" 
             id="global-search-input" 
             placeholder="Search across 86+ apps (e.g. Swiggy, Uber, iPhone, Zomato, Milk, Myntra, IRCTC)..." 
-            class="w-full pl-11 pr-24 py-2.5 bg-slate-100 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white transition"
+            class="w-full pl-11 pr-24 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition"
           >
           <div class="absolute right-1.5 flex items-center space-x-1">
             <button id="clear-search-btn" class="hidden px-2 py-1 text-xs text-slate-400 hover:text-slate-600">✕</button>
@@ -137,50 +164,38 @@
       <!-- Desktop Navigation Actions -->
       <div class="hidden md:flex items-center space-x-2 shrink-0">
         <!-- Language Cycle/Selector Button in Navbar -->
-        <button id="nav-lang-toggle-btn" class="flex items-center space-x-1.5 px-3 py-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 font-extrabold text-xs border border-amber-300 transition shadow-sm" title="Switch Language (English / Hindi / Hinglish)">
+        <button id="nav-lang-toggle-btn" class="flex items-center space-x-1.5 px-3 py-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-semibold text-xs transition ring-1 ring-slate-200" title="Switch Language (English / Hindi / Hinglish)">
           <span>🌐</span>
           <span id="nav-current-lang-label">Lang: English</span>
         </button>
 
         <!-- AI Command Center Button -->
-        <button id="nav-ai-hub-btn" class="flex items-center space-x-1.5 px-3 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-bold text-xs shadow-sm transition">
+        <button id="nav-ai-hub-btn" class="flex items-center space-x-1.5 px-3 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs shadow-sm transition">
           <span>🤖</span>
           <span>SR1 AI Hub</span>
         </button>
 
         <!-- Universal Wishlist Button -->
-        <button id="nav-wishlist-btn" class="flex items-center space-x-1.5 px-3 py-2 rounded-xl text-rose-700 bg-rose-50 hover:bg-rose-100 font-bold text-xs border border-rose-200 transition">
+        <button id="nav-wishlist-btn" class="flex items-center space-x-1.5 px-3 py-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-semibold text-xs transition">
           <span>❤️</span>
           <span>Wishlist</span>
           <span id="nav-wishlist-count" class="bg-rose-600 text-white text-[10px] px-1.5 py-0.2 rounded-full">4</span>
         </button>
 
-        <!-- Jump to Ecosystem button -->
-        <button id="nav-categories-btn" class="flex items-center space-x-1.5 px-3 py-2 rounded-xl text-slate-700 hover:bg-slate-100 font-medium text-xs border border-slate-200 transition">
-          <span class="text-indigo-600 text-sm">🏛️</span>
-          <span>86+ All Platforms</span>
-        </button>
-
-        <!-- Compare Hub Button -->
-        <button id="nav-compare-btn" class="flex items-center space-x-1.5 px-3 py-2 rounded-xl text-slate-700 hover:bg-slate-100 font-medium text-xs border border-slate-200 transition">
-          <span class="text-amber-500 text-sm">⚖️</span>
-          <span>Price Comparison</span>
-        </button>
-
-        <!-- Orders Tracking Button -->
-        <button id="nav-orders-btn" class="flex items-center space-x-1.5 px-3 py-2 rounded-xl text-slate-700 hover:bg-slate-100 font-medium text-xs border border-slate-200 transition">
-          <span>📦</span>
-          <span>My Orders</span>
-        </button>
-
         <!-- Unified Cart Button -->
-        <button id="desktop-cart-btn" class="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-bold text-sm rounded-xl shadow-sm transition">
+        <button id="desktop-cart-btn" class="flex items-center space-x-2 px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-semibold text-sm rounded-lg shadow-sm transition">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
           </svg>
           <span>Cart</span>
-          <span id="desktop-cart-count" class="bg-slate-900 text-white text-xs px-2 py-0.5 rounded-full font-bold ml-1">0</span>
+          <span id="desktop-cart-count" class="bg-white/15 text-white text-xs px-2 py-0.5 rounded-full font-bold ml-1">0</span>
         </button>
+
+        <!-- Admin Console -->
+        <a href="/login" id="nav-admin-btn" class="flex items-center space-x-1.5 px-3 py-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-semibold text-xs ring-1 ring-slate-200 transition" title="Admin Console">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+          <span>Admin</span>
+        </a>
       </div>
 
     </div>
@@ -207,8 +222,28 @@
           </button>
         </div>
 
-        <div class="hidden lg:flex items-center space-x-2 text-xs font-medium text-slate-500 shrink-0">
-          <span class="flex items-center"><span class="w-2 h-2 rounded-full bg-emerald-500 mr-1.5 animate-pulse"></span> Blinkit Dark Store: Open (8 mins away)</span>
+        <div class="hidden md:flex items-center gap-1 text-xs font-medium text-slate-500 shrink-0">
+        <!-- Jump to Ecosystem button -->
+          <button id="nav-categories-btn" class="flex items-center space-x-1.5 px-2.5 py-1 rounded-md text-slate-600 hover:text-slate-900 hover:bg-white font-semibold text-xs transition">
+            <span class="text-indigo-600 text-sm">🏛️</span>
+            <span>86+ All Platforms</span>
+          </button>
+
+          <!-- Compare Hub Button -->
+          <button id="nav-compare-btn" class="flex items-center space-x-1.5 px-2.5 py-1 rounded-md text-slate-600 hover:text-slate-900 hover:bg-white font-semibold text-xs transition">
+            <span class="text-amber-500 text-sm">⚖️</span>
+            <span>Price Comparison</span>
+          </button>
+
+          <!-- Orders Tracking Button -->
+          <button id="nav-orders-btn" class="flex items-center space-x-1.5 px-2.5 py-1 rounded-md text-slate-600 hover:text-slate-900 hover:bg-white font-semibold text-xs transition">
+            <span>📦</span>
+            <span>My Orders</span>
+          </button>
+
+          <span class="hidden 2xl:inline-block w-px h-4 bg-slate-200 mx-1"></span>
+          <span class="hidden 2xl:flex items-center">
+          <span class="flex items-center"><span class="w-2 h-2 rounded-full bg-emerald-500 mr-1.5 animate-pulse"></span> Blinkit Dark Store: Open (8 mins away)</span></span>
         </div>
       </div>
     </div>
@@ -218,9 +253,68 @@
   <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-5 space-y-7">
 
     <!-- ===================================================================== -->
+    <!-- SR1 HERO                                                              -->
+    <!-- ===================================================================== -->
+    <section id="sr1-hero" class="relative overflow-hidden rounded-3xl bg-slate-950 text-white">
+      <div class="absolute inset-0 sr1-grid-bg"></div>
+      <div class="absolute -top-32 -left-24 w-[460px] h-[460px] rounded-full bg-indigo-600/35 blur-3xl"></div>
+      <div class="absolute -bottom-40 right-0 w-[420px] h-[420px] rounded-full bg-cyan-400/10 blur-3xl"></div>
+      <div class="relative grid lg:grid-cols-5 gap-8 p-6 md:p-10">
+        <div class="lg:col-span-3 space-y-5">
+          <div class="inline-flex items-center gap-2 rounded-full bg-white/5 ring-1 ring-white/10 px-3 py-1 text-[11px] font-semibold text-indigo-200">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            India's Unified Commerce OS
+          </div>
+          <h1 id="i18n-hero-title" class="brand-font text-3xl md:text-5xl font-extrabold leading-[1.05]">
+            Every app. One cart.<br>
+            <span class="bg-gradient-to-r from-indigo-300 via-sky-300 to-emerald-300 bg-clip-text text-transparent">Smarter prices, always.</span>
+          </h1>
+          <p id="i18n-hero-sub" class="text-sm md:text-base text-slate-300 max-w-xl leading-relaxed">
+            SR1 brings Amazon, Flipkart, Blinkit and 86+ Indian apps into a single, intelligent experience — compare live prices, track every order and save more with AI.
+          </p>
+          <div class="flex flex-wrap gap-3">
+            <button type="button" onclick="document.getElementById('mega-ecosystem-section').scrollIntoView({behavior:'smooth'})" class="px-5 py-2.5 rounded-lg bg-white text-slate-900 font-semibold text-sm hover:bg-slate-100 transition shadow-sm"><span id="i18n-hero-cta1">Explore 86+ platforms</span></button>
+            <button type="button" onclick="document.getElementById('compare-matrix-card').scrollIntoView({behavior:'smooth'})" class="px-5 py-2.5 rounded-lg bg-white/5 ring-1 ring-white/15 text-white font-semibold text-sm hover:bg-white/10 transition"><span id="i18n-hero-cta2">Compare live prices</span></button>
+          </div>
+          <div class="flex flex-wrap items-center gap-x-5 gap-y-2 pt-2 text-[11px] text-slate-400">
+            <span class="flex items-center gap-1.5"><svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>Secure unified checkout</span>
+            <span class="flex items-center gap-1.5"><svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>100% genuine platforms</span>
+            <span class="flex items-center gap-1.5"><svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>24×7 SR1 helpdesk</span>
+          </div>
+        </div>
+        <div class="lg:col-span-2 grid grid-cols-2 gap-3 content-center">
+          <div class="rounded-2xl bg-white/5 ring-1 ring-white/10 p-4 backdrop-blur">
+            <div class="text-[11px] uppercase tracking-wider text-slate-400 font-semibold">Connected apps</div>
+            <div class="brand-font text-3xl font-extrabold mt-1">86+</div>
+            <div class="text-[11px] text-slate-400 mt-1">Shopping, food, travel & more</div>
+          </div>
+          <div class="rounded-2xl bg-white/5 ring-1 ring-white/10 p-4 backdrop-blur">
+            <div class="text-[11px] uppercase tracking-wider text-slate-400 font-semibold">Categories</div>
+            <div class="brand-font text-3xl font-extrabold mt-1">16</div>
+            <div class="text-[11px] text-slate-400 mt-1">Organised in one hub</div>
+          </div>
+          <div class="rounded-2xl bg-white/5 ring-1 ring-white/10 p-4 backdrop-blur">
+            <div class="text-[11px] uppercase tracking-wider text-slate-400 font-semibold">Instant delivery</div>
+            <div class="brand-font text-3xl font-extrabold mt-1">10<span class="text-lg text-slate-400"> min</span></div>
+            <div class="text-[11px] text-slate-400 mt-1">Via Blinkit dark stores</div>
+          </div>
+          <div class="rounded-2xl bg-gradient-to-br from-indigo-500/30 to-indigo-700/20 ring-1 ring-indigo-300/20 p-4 backdrop-blur">
+            <div class="text-[11px] uppercase tracking-wider text-indigo-200 font-semibold">Price engine</div>
+            <div class="brand-font text-3xl font-extrabold mt-1">3<span class="text-lg text-indigo-200"> stores</span></div>
+            <div class="text-[11px] text-indigo-200/80 mt-1">Live side-by-side compare</div>
+          </div>
+        </div>
+      </div>
+      <div class="relative border-t border-white/10 px-6 md:px-10 py-3 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs font-semibold text-slate-400">
+        <span class="text-[10px] uppercase tracking-widest text-slate-500">Works with</span>
+        <span>Amazon</span><span>Flipkart</span><span>Blinkit</span><span>Swiggy</span><span>Zomato</span><span>Myntra</span><span>Zepto</span><span>IRCTC</span><span>MakeMyTrip</span><span class="text-slate-500">+77 more</span>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
     <!-- SECTION 0: SR1 AI SUPER ASSISTANT & 7-IN-1 UNIFIED COMMAND CENTER     -->
     <!-- ===================================================================== -->
-    <section id="ai-command-center-section" class="bg-white rounded-3xl border-2 border-indigo-100 shadow-md overflow-hidden">
+    <section id="ai-command-center-section" class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
       
       <!-- Top AI Header Bar -->
       <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-violet-950 text-white p-5 md:p-6">
@@ -1207,39 +1301,55 @@
   </main>
 
   <!-- FOOTER -->
-  <footer class="bg-slate-900 text-slate-400 text-xs py-8 border-t border-slate-800 mt-12">
-    <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-6">
-      <div class="space-y-2 md:col-span-2">
-        <div class="flex items-center space-x-2">
-          <div class="w-7 h-7 rounded-lg bg-gradient-to-tr from-amber-500 via-blue-600 to-emerald-600 flex items-center justify-center text-white font-black text-sm">
-            SR1
-          </div>
+  <footer class="bg-slate-950 text-slate-400 text-xs border-t border-white/5 mt-12">
+    <div class="max-w-7xl mx-auto px-4 py-12 grid grid-cols-2 md:grid-cols-5 gap-8">
+      <div class="space-y-3 col-span-2">
+        <div class="flex items-center space-x-2.5">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-800 ring-1 ring-white/10 flex items-center justify-center text-white font-extrabold text-sm brand-font">SR1</div>
           <span class="brand-font text-lg font-bold text-white">SR1 Super App</span>
         </div>
-        <p id="i18n-footer-desc" class="text-slate-400 text-xs max-w-md">
+        <p id="i18n-footer-desc" class="text-slate-400 text-xs max-w-md leading-relaxed">
           SR1 is India's premier all-in-one unified commerce super app bringing Amazon, Flipkart, Blinkit, and 86+ digital services together in one seamless experience.
         </p>
-        <p class="text-[11px] text-slate-500">© 2026 SR1 Multi-Platform Commerce Technologies. All rights reserved.</p>
+        <div class="flex items-center gap-2 pt-1">
+          <span class="inline-flex items-center gap-1.5 rounded-md bg-white/5 ring-1 ring-white/10 px-2 py-1 text-[11px] text-slate-300"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>All systems operational</span>
+        </div>
       </div>
 
       <div>
-        <h5 class="font-bold text-slate-200 uppercase tracking-wider text-[11px] mb-2">Integrated Stores</h5>
-        <ul class="space-y-1.5 text-xs">
-          <li><span class="hover:text-amber-400 cursor-pointer text-slate-300">Amazon India Hub</span></li>
-          <li><span class="hover:text-blue-400 cursor-pointer text-slate-300">Flipkart SuperStore</span></li>
-          <li><span class="hover:text-emerald-400 cursor-pointer text-slate-300">Blinkit 10-Min Groceries</span></li>
-          <li><span class="hover:text-white cursor-pointer text-slate-300">SR1 Price Comparison Engine</span></li>
+        <h5 class="font-semibold text-slate-200 uppercase tracking-wider text-[11px] mb-3">Integrated Stores</h5>
+        <ul class="space-y-2 text-xs">
+          <li><span class="hover:text-white cursor-pointer text-slate-400">Amazon India Hub</span></li>
+          <li><span class="hover:text-white cursor-pointer text-slate-400">Flipkart SuperStore</span></li>
+          <li><span class="hover:text-white cursor-pointer text-slate-400">Blinkit 10-Min Groceries</span></li>
+          <li><span class="hover:text-white cursor-pointer text-slate-400">SR1 Price Comparison Engine</span></li>
         </ul>
       </div>
 
       <div>
-        <h5 class="font-bold text-slate-200 uppercase tracking-wider text-[11px] mb-2">Support & Safety</h5>
-        <ul class="space-y-1.5 text-xs">
-          <li><span class="text-slate-300">Unified 1-Click Checkout</span></li>
-          <li><span class="text-slate-300">100% Genuine Platform Guarantee</span></li>
-          <li><span class="text-slate-300">Live Delivery Order Tracking</span></li>
-          <li><span class="text-slate-300">24x7 SR1 Helpdesk</span></li>
+        <h5 class="font-semibold text-slate-200 uppercase tracking-wider text-[11px] mb-3">Support & Safety</h5>
+        <ul class="space-y-2 text-xs">
+          <li><span class="text-slate-400">Unified 1-Click Checkout</span></li>
+          <li><span class="text-slate-400">100% Genuine Platform Guarantee</span></li>
+          <li><span class="text-slate-400">Live Delivery Order Tracking</span></li>
+          <li><span class="text-slate-400">24x7 SR1 Helpdesk</span></li>
         </ul>
+      </div>
+
+      <div>
+        <h5 class="font-semibold text-slate-200 uppercase tracking-wider text-[11px] mb-3">For Business</h5>
+        <ul class="space-y-2 text-xs">
+          <li><a href="/login" class="text-slate-400 hover:text-white">Admin Console</a></li>
+          <li><span class="text-slate-400">Partner with SR1</span></li>
+          <li><span class="text-slate-400">Seller Onboarding</span></li>
+          <li><span class="text-slate-400">API & Integrations</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="border-t border-white/5">
+      <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] text-slate-500">
+        <p>© 2026 SR1 Multi-Platform Commerce Technologies. All rights reserved.</p>
+        <p class="flex items-center gap-4"><span>Privacy</span><span>Terms</span><a href="/login" class="hover:text-slate-300">Admin</a></p>
       </div>
     </div>
   </footer>
@@ -1357,7 +1467,7 @@
           </div>
         </div>
 
-        <button id="checkout-btn" class="w-full py-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-extrabold text-sm rounded-xl shadow-md transition flex items-center justify-center space-x-2">
+        <button id="checkout-btn" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-sm rounded-xl shadow-md transition flex items-center justify-center space-x-2">
           <span>Proceed to SR1 Checkout</span>
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
@@ -3145,6 +3255,24 @@
         const orderId = "SR1-" + Math.floor(1000000 + Math.random() * 9000000);
         document.getElementById("tracking-order-id").textContent = `Order #${orderId}`;
 
+        try {
+          const savedOrders = JSON.parse(localStorage.getItem("sr1_orders") || "[]");
+          savedOrders.unshift({
+            id: orderId,
+            createdAt: new Date().toISOString(),
+            customer: document.getElementById("checkout-name").value,
+            city: document.getElementById("checkout-city").value,
+            items: keys.map(k => ({
+              title: appState.cart[k].item.title,
+              qty: appState.cart[k].qty,
+              price: appState.cart[k].item.price,
+              platform: appState.cart[k].item.platform
+            })),
+            total: keys.reduce((sum, k) => sum + appState.cart[k].item.price * appState.cart[k].qty, 0)
+          });
+          localStorage.setItem("sr1_orders", JSON.stringify(savedOrders.slice(0, 200)));
+        } catch (e) {}
+
         // Clear cart
         appState.cart = {};
         updateCartUI();
@@ -4524,6 +4652,10 @@
           "i18n-adv-2": "Millions of gadgets, genuine electronics, and home appliances with reliable Prime next-day delivery and top discounts.",
           "i18n-adv-3": "Trending fashion, footwear, smartphones, and SuperCoin rewards from India's favorite e-commerce marketplace.",
           "i18n-footer-desc": "SR1 is India's premier all-in-one unified commerce super app bringing Amazon, Flipkart, Blinkit, and 86+ digital services together in one seamless experience.",
+          "i18n-hero-title": "Every app. One cart.<br><span class=\"bg-gradient-to-r from-indigo-300 via-sky-300 to-emerald-300 bg-clip-text text-transparent\">Smarter prices, always.</span>",
+          "i18n-hero-sub": "SR1 brings Amazon, Flipkart, Blinkit and 86+ Indian apps into a single, intelligent experience — compare live prices, track every order and save more with AI.",
+          "i18n-hero-cta1": "Explore 86+ platforms",
+          "i18n-hero-cta2": "Compare live prices",
           "i18n-chk-addr": "Delivery Address",
           "i18n-chk-pay": "Select Payment Method",
           "i18n-chk-btn": "Place Unified Order",
@@ -4588,6 +4720,10 @@
           "i18n-adv-2": "लाखों गैजेट्स, ओरिजिनल इलेक्ट्रॉनिक्स और बुक्स पर विश्वसनीय प्राइम शिपिंग और बेस्ट डिस्काउंट्स।",
           "i18n-adv-3": "ट्रेंडिंग फैशन, होम अप्लायंसेज और भारत के सबसे पसंदीदा ई-कॉमर्स ऑफर्स एक क्लिक में।",
           "i18n-footer-desc": "SR1 भारत का पहला ऑल-इन-वन यूनिफाइड कॉमर्स प्लेटफॉर्म है जो Amazon, Flipkart और Blinkit के प्रोडक्ट्स और सर्विसेज को एक ही सुविधाजनक इंटरफ़ेस पर प्रस्तुत करता है।",
+          "i18n-hero-title": "हर ऐप। एक कार्ट।<br><span class=\"bg-gradient-to-r from-indigo-300 via-sky-300 to-emerald-300 bg-clip-text text-transparent\">हमेशा स्मार्ट दाम।</span>",
+          "i18n-hero-sub": "SR1 Amazon, Flipkart, Blinkit और 86+ भारतीय ऐप्स को एक स्मार्ट अनुभव में लाता है — लाइव दाम तुलना करें, हर ऑर्डर ट्रैक करें और AI से ज़्यादा बचत करें।",
+          "i18n-hero-cta1": "86+ प्लेटफॉर्म देखें",
+          "i18n-hero-cta2": "लाइव दाम तुलना करें",
           "i18n-chk-addr": "Delivery Address (डिलीवरी पता)",
           "i18n-chk-pay": "Select Payment Method (भुगतान का तरीका)",
           "i18n-chk-btn": "Place Unified Order (ऑर्डर कन्फर्म करें)",
@@ -4652,6 +4788,10 @@
           "i18n-adv-2": "Lakhon gadgets, original electronics aur books par reliable Prime shipping aur best discounts.",
           "i18n-adv-3": "Trending fashion, home appliances aur India ke favorite e-commerce offers ek click mein.",
           "i18n-footer-desc": "SR1 India ka pehla all-in-one unified commerce platform hai jo Amazon, Flipkart, Blinkit aur 86+ apps ko ek saath jodta hai.",
+          "i18n-hero-title": "Har app. Ek cart.<br><span class=\"bg-gradient-to-r from-indigo-300 via-sky-300 to-emerald-300 bg-clip-text text-transparent\">Hamesha smart prices.</span>",
+          "i18n-hero-sub": "SR1 Amazon, Flipkart, Blinkit aur 86+ Indian apps ko ek smart experience mein laata hai — live prices compare karein, har order track karein aur AI se zyada bachat karein.",
+          "i18n-hero-cta1": "86+ platforms dekhein",
+          "i18n-hero-cta2": "Live prices compare karein",
           "i18n-chk-addr": "Delivery Address",
           "i18n-chk-pay": "Select Payment Method",
           "i18n-chk-btn": "Place Unified Order",
@@ -4674,7 +4814,7 @@
         // Update Top Header Language Buttons
         document.querySelectorAll(".lang-switch-btn").forEach(btn => {
           if (btn.getAttribute("data-lang") === lang) {
-            btn.className = "lang-switch-btn px-2 py-0.5 rounded text-[10px] font-extrabold bg-amber-400 text-slate-950 transition";
+            btn.className = "lang-switch-btn px-2 py-0.5 rounded text-[10px] font-extrabold bg-white text-slate-900 transition";
           } else {
             btn.className = "lang-switch-btn px-2 py-0.5 rounded text-[10px] font-bold text-slate-300 hover:text-white transition";
           }
