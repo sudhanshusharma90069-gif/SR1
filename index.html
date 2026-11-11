@@ -265,16 +265,16 @@
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
             India's Unified Commerce OS
           </div>
-          <h1 class="brand-font text-3xl md:text-5xl font-extrabold leading-[1.05]">
+          <h1 id="i18n-hero-title" class="brand-font text-3xl md:text-5xl font-extrabold leading-[1.05]">
             Every app. One cart.<br>
             <span class="bg-gradient-to-r from-indigo-300 via-sky-300 to-emerald-300 bg-clip-text text-transparent">Smarter prices, always.</span>
           </h1>
-          <p class="text-sm md:text-base text-slate-300 max-w-xl leading-relaxed">
+          <p id="i18n-hero-sub" class="text-sm md:text-base text-slate-300 max-w-xl leading-relaxed">
             SR1 brings Amazon, Flipkart, Blinkit and 86+ Indian apps into a single, intelligent experience — compare live prices, track every order and save more with AI.
           </p>
           <div class="flex flex-wrap gap-3">
-            <button type="button" onclick="document.getElementById('mega-ecosystem-section').scrollIntoView({behavior:'smooth'})" class="px-5 py-2.5 rounded-lg bg-white text-slate-900 font-semibold text-sm hover:bg-slate-100 transition shadow-sm">Explore 86+ platforms</button>
-            <button type="button" onclick="document.getElementById('compare-matrix-card').scrollIntoView({behavior:'smooth'})" class="px-5 py-2.5 rounded-lg bg-white/5 ring-1 ring-white/15 text-white font-semibold text-sm hover:bg-white/10 transition">Compare live prices</button>
+            <button type="button" onclick="document.getElementById('mega-ecosystem-section').scrollIntoView({behavior:'smooth'})" class="px-5 py-2.5 rounded-lg bg-white text-slate-900 font-semibold text-sm hover:bg-slate-100 transition shadow-sm"><span id="i18n-hero-cta1">Explore 86+ platforms</span></button>
+            <button type="button" onclick="document.getElementById('compare-matrix-card').scrollIntoView({behavior:'smooth'})" class="px-5 py-2.5 rounded-lg bg-white/5 ring-1 ring-white/15 text-white font-semibold text-sm hover:bg-white/10 transition"><span id="i18n-hero-cta2">Compare live prices</span></button>
           </div>
           <div class="flex flex-wrap items-center gap-x-5 gap-y-2 pt-2 text-[11px] text-slate-400">
             <span class="flex items-center gap-1.5"><svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>Secure unified checkout</span>
@@ -4652,6 +4652,10 @@
           "i18n-adv-2": "Millions of gadgets, genuine electronics, and home appliances with reliable Prime next-day delivery and top discounts.",
           "i18n-adv-3": "Trending fashion, footwear, smartphones, and SuperCoin rewards from India's favorite e-commerce marketplace.",
           "i18n-footer-desc": "SR1 is India's premier all-in-one unified commerce super app bringing Amazon, Flipkart, Blinkit, and 86+ digital services together in one seamless experience.",
+          "i18n-hero-title": "Every app. One cart.<br><span class=\"bg-gradient-to-r from-indigo-300 via-sky-300 to-emerald-300 bg-clip-text text-transparent\">Smarter prices, always.</span>",
+          "i18n-hero-sub": "SR1 brings Amazon, Flipkart, Blinkit and 86+ Indian apps into a single, intelligent experience — compare live prices, track every order and save more with AI.",
+          "i18n-hero-cta1": "Explore 86+ platforms",
+          "i18n-hero-cta2": "Compare live prices",
           "i18n-chk-addr": "Delivery Address",
           "i18n-chk-pay": "Select Payment Method",
           "i18n-chk-btn": "Place Unified Order",
@@ -4716,6 +4720,10 @@
           "i18n-adv-2": "लाखों गैजेट्स, ओरिजिनल इलेक्ट्रॉनिक्स और बुक्स पर विश्वसनीय प्राइम शिपिंग और बेस्ट डिस्काउंट्स।",
           "i18n-adv-3": "ट्रेंडिंग फैशन, होम अप्लायंसेज और भारत के सबसे पसंदीदा ई-कॉमर्स ऑफर्स एक क्लिक में।",
           "i18n-footer-desc": "SR1 भारत का पहला ऑल-इन-वन यूनिफाइड कॉमर्स प्लेटफॉर्म है जो Amazon, Flipkart और Blinkit के प्रोडक्ट्स और सर्विसेज को एक ही सुविधाजनक इंटरफ़ेस पर प्रस्तुत करता है।",
+          "i18n-hero-title": "हर ऐप। एक कार्ट।<br><span class=\"bg-gradient-to-r from-indigo-300 via-sky-300 to-emerald-300 bg-clip-text text-transparent\">हमेशा स्मार्ट दाम।</span>",
+          "i18n-hero-sub": "SR1 Amazon, Flipkart, Blinkit और 86+ भारतीय ऐप्स को एक स्मार्ट अनुभव में लाता है — लाइव दाम तुलना करें, हर ऑर्डर ट्रैक करें और AI से ज़्यादा बचत करें।",
+          "i18n-hero-cta1": "86+ प्लेटफॉर्म देखें",
+          "i18n-hero-cta2": "लाइव दाम तुलना करें",
           "i18n-chk-addr": "Delivery Address (डिलीवरी पता)",
           "i18n-chk-pay": "Select Payment Method (भुगतान का तरीका)",
           "i18n-chk-btn": "Place Unified Order (ऑर्डर कन्फर्म करें)",
@@ -4780,6 +4788,10 @@
           "i18n-adv-2": "Lakhon gadgets, original electronics aur books par reliable Prime shipping aur best discounts.",
           "i18n-adv-3": "Trending fashion, home appliances aur India ke favorite e-commerce offers ek click mein.",
           "i18n-footer-desc": "SR1 India ka pehla all-in-one unified commerce platform hai jo Amazon, Flipkart, Blinkit aur 86+ apps ko ek saath jodta hai.",
+          "i18n-hero-title": "Har app. Ek cart.<br><span class=\"bg-gradient-to-r from-indigo-300 via-sky-300 to-emerald-300 bg-clip-text text-transparent\">Hamesha smart prices.</span>",
+          "i18n-hero-sub": "SR1 Amazon, Flipkart, Blinkit aur 86+ Indian apps ko ek smart experience mein laata hai — live prices compare karein, har order track karein aur AI se zyada bachat karein.",
+          "i18n-hero-cta1": "86+ platforms dekhein",
+          "i18n-hero-cta2": "Live prices compare karein",
           "i18n-chk-addr": "Delivery Address",
           "i18n-chk-pay": "Select Payment Method",
           "i18n-chk-btn": "Place Unified Order",
