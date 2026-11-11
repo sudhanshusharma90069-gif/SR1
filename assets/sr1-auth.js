@@ -120,7 +120,12 @@
     async updateName(name) { await fb.auth().currentUser.updateProfile({ displayName: name.trim() }); current = toUser(fb.auth().currentUser); emit(); },
     async changePassword(oldPw, newPw) {
       const u = fb.auth().currentUser;
-      await u.reauthenticateWithCredential(fb.auth.EmailAuthProvider.credential(u.email, oldPw));
+      try {
+        await u.reauthenticateWithCredential(fb.auth.EmailAuthProvider.credential(u.email, oldPw));
+      } catch (e) {
+        if (e.code === "auth/invalid-credential" || e.code === "auth/wrong-password") fail("auth/wrong-password", "Current password is incorrect.");
+        throw e;
+      }
       await u.updatePassword(newPw);
     },
     async idToken() { return fb.auth().currentUser ? fb.auth().currentUser.getIdToken() : null; },
@@ -142,7 +147,7 @@
   const impl = () => (cfg ? firebaseImpl : demo);
   const ERRORS = {
     "auth/invalid-credential": "Incorrect email or password.",
-    "auth/wrong-password": "Incorrect password.",
+    "auth/wrong-password": "Current password is incorrect.",
     "auth/user-not-found": "Incorrect email or password.",
     "auth/email-already-in-use": "An account with this email already exists.",
     "auth/weak-password": "Password must be at least 6 characters.",
