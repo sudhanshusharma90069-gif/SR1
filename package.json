@@ -3,6 +3,7 @@
   "private": true,
   "type": "module",
   "dependencies": {
-    "@vercel/functions": "^3.11.1"
+    "@vercel/functions": "^3.11.1",
+    "jose": "^5.10.0"
   }
 }
