@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex">
-  <title>My SR1 Account</title>
+  <title>My SROne Account</title>
   <script src="/assets/sr1-theme.js"></script>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script>tailwind.config = { darkMode: "class" };</script>
@@ -36,9 +36,9 @@
     <!-- SIDEBAR -->
     <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col -translate-x-full lg:translate-x-0 transition-transform">
       <a href="/" class="flex items-center gap-3 px-5 h-16 border-b border-slate-200 dark:border-slate-800">
-        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-700 flex items-center justify-center display font-extrabold text-white text-sm">SR1</div>
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-700 flex items-center justify-center display font-extrabold text-white text-sm">SRO</div>
         <div>
-          <div class="display font-bold text-slate-900 dark:text-white text-sm leading-tight">My SR1</div>
+          <div class="display font-bold text-slate-900 dark:text-white text-sm leading-tight">My SROne</div>
           <div class="text-[11px] text-slate-500">Personal shopping hub</div>
         </div>
       </a>
@@ -55,7 +55,7 @@
       </nav>
       <div class="p-4 border-t border-slate-200 dark:border-slate-800">
         <div class="rounded-xl bg-gradient-to-br from-indigo-600 to-indigo-800 text-white p-3.5">
-          <div class="text-[11px] text-indigo-200">SR1 Coins</div>
+          <div class="text-[11px] text-indigo-200">SROne Coins</div>
           <div id="side-coins" class="display text-xl font-extrabold">0</div>
           <div id="side-tier" class="text-[11px] text-indigo-200 mt-0.5">Silver member</div>
         </div>
@@ -156,7 +156,7 @@
           <div class="card p-4 flex items-center justify-between">
             <div>
               <h3 class="display font-bold">Universal wishlist</h3>
-              <p class="text-xs text-slate-500">Items you saved with 🤍 on the SR1 store.</p>
+              <p class="text-xs text-slate-500">Items you saved with 🤍 on the SROne store.</p>
             </div>
             <a href="/" class="btn btn-primary">Browse products</a>
           </div>
@@ -184,7 +184,7 @@
         <section data-view-panel="rewards" class="space-y-6">
           <div class="grid md:grid-cols-3 gap-4">
             <div class="card p-5 md:col-span-2 bg-gradient-to-br from-amber-400 to-orange-500 !border-0 text-white">
-              <div class="text-xs font-semibold uppercase tracking-widest text-white/80">SR1 Coins balance</div>
+              <div class="text-xs font-semibold uppercase tracking-widest text-white/80">SROne Coins balance</div>
               <div id="rw-coins" class="display text-4xl font-extrabold mt-1">0</div>
               <div id="rw-value" class="text-sm text-white/90 mt-1"></div>
               <div class="mt-5 text-xs text-white/90"><span id="rw-tier">Silver</span> · <span id="rw-next"></span></div>
@@ -272,7 +272,7 @@
       return STATUS[mins < 10 ? 0 : mins < 60 ? 1 : mins < 60 * 24 ? 2 : mins < 60 * 48 ? 3 : 4];
     }
     const statusClass = (s) => s === "Delivered" ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300" : "bg-indigo-100 text-indigo-700 dark:bg-indigo-500/15 dark:text-indigo-300";
-    const storeOf = (o) => [...new Set((o.items || []).map((i) => i.platform || "SR1"))];
+    const storeOf = (o) => [...new Set((o.items || []).map((i) => i.platform || "SROne"))];
     const cap = (s) => String(s).charAt(0).toUpperCase() + String(s).slice(1);
 
     function loadOrders() {
@@ -321,7 +321,7 @@
       const kpis = [
         ["Total orders", orders.length, "📦", "orders"],
         ["Total spent", inr(spent()), "💳", "orders"],
-        ["SR1 Coins", coins().toLocaleString("en-IN"), "🏆", "rewards"],
+        ["SROne Coins", coins().toLocaleString("en-IN"), "🏆", "rewards"],
         ["Price alerts", alerts.length, "🔔", "alerts"],
       ];
       document.getElementById("kpis").innerHTML = kpis.map(([l, v, i, view]) => `
@@ -342,7 +342,7 @@
       const months = [...Array(6)].map((_, i) => { const d = new Date(); d.setDate(1); d.setMonth(d.getMonth() - 5 + i); return d; });
       const monthly = months.map((m) => orders.filter((o) => { const d = new Date(o.createdAt); return d.getMonth() === m.getMonth() && d.getFullYear() === m.getFullYear(); }).reduce((s, o) => s + o.total, 0));
       const byStore = {};
-      orders.forEach((o) => (o.items || []).forEach((i) => { const k = cap(i.platform || "SR1"); byStore[k] = (byStore[k] || 0) + i.price * i.qty; }));
+      orders.forEach((o) => (o.items || []).forEach((i) => { const k = cap(i.platform || "SROne"); byStore[k] = (byStore[k] || 0) + i.price * i.qty; }));
       Object.values(charts).forEach((c) => c.destroy());
       charts.spend = new Chart(document.getElementById("spend-chart"), {
         type: "bar",
@@ -369,7 +369,7 @@
       const list = orders.filter((o) => (!sel.value || storeOf(o).includes(sel.value)) && (!q || o.id.toLowerCase().includes(q) || (o.items || []).some((i) => i.title.toLowerCase().includes(q))));
       document.getElementById("orders-summary").textContent = `${list.length} order${list.length === 1 ? "" : "s"} · ${inr(list.reduce((s, o) => s + o.total, 0))}`;
       const box = document.getElementById("orders-list");
-      if (!orders.length) { box.innerHTML = emptyState("📦", "No orders yet", "Orders you place on SR1 while signed in will appear here.", `<a href="/" class="btn btn-primary inline-block mt-4">Start shopping</a>`); return; }
+      if (!orders.length) { box.innerHTML = emptyState("📦", "No orders yet", "Orders you place on SROne while signed in will appear here.", `<a href="/" class="btn btn-primary inline-block mt-4">Start shopping</a>`); return; }
       if (!list.length) { box.innerHTML = emptyState("🔍", "No matching orders", "Try a different search or store."); return; }
       box.innerHTML = list.map((o) => {
         const st = orderStatus(o), idx = STATUS.indexOf(st);
@@ -386,7 +386,7 @@
           <div class="border-t border-slate-100 dark:border-slate-800 p-4 grid md:grid-cols-2 gap-6">
             <div>
               <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Items</div>
-              ${(o.items || []).map((i) => `<div class="flex justify-between text-sm py-1"><span>${i.qty}× ${esc(i.title)} <span class="text-xs text-slate-500">(${esc(cap(i.platform || "SR1"))})</span></span><span class="font-semibold">${inr(i.price * i.qty)}</span></div>`).join("")}
+              ${(o.items || []).map((i) => `<div class="flex justify-between text-sm py-1"><span>${i.qty}× ${esc(i.title)} <span class="text-xs text-slate-500">(${esc(cap(i.platform || "SROne"))})</span></span><span class="font-semibold">${inr(i.price * i.qty)}</span></div>`).join("")}
               <div class="text-xs text-slate-500 mt-3">Deliver to: ${esc(o.customer)}${o.city ? ", " + esc(o.city) : ""}</div>
             </div>
             <div>
@@ -401,12 +401,12 @@
     function renderWishlist() {
       const wl = read("sr1_wishlist", []);
       const box = document.getElementById("wishlist-grid");
-      if (!wl.length) { box.innerHTML = `<div class="sm:col-span-2 lg:col-span-3">${emptyState("🤍", "Your wishlist is empty", "Tap 🤍 on any product in the SR1 store to save it here.")}</div>`; return; }
+      if (!wl.length) { box.innerHTML = `<div class="sm:col-span-2 lg:col-span-3">${emptyState("🤍", "Your wishlist is empty", "Tap 🤍 on any product in the SROne store to save it here.")}</div>`; return; }
       box.innerHTML = wl.map((p) => `<div class="card p-4 flex gap-4">
         <div class="w-16 h-16 rounded-lg bg-slate-100 dark:bg-slate-800 overflow-hidden shrink-0"><span class="w-full h-full flex items-center justify-center text-3xl">${esc(p.icon || "🛍️")}</span></div>
         <div class="min-w-0 flex-1">
           <div class="text-sm font-semibold line-clamp-2">${esc(p.title)}</div>
-          <div class="text-xs text-slate-500 mt-0.5">${esc(cap(p.platform || "SR1"))}</div>
+          <div class="text-xs text-slate-500 mt-0.5">${esc(cap(p.platform || "SROne"))}</div>
           <div class="flex items-center justify-between mt-2">
             <span class="font-bold">${inr(p.price)}</span>
             <div class="flex gap-1.5">
